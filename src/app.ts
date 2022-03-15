@@ -6,7 +6,9 @@ import userRouter from "./routes/users.js";
 import logger from "morgan";
 import cors from "cors";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+
+
+dotenv.config({ path: `.env.${process.env.NODE_ENV} ` });
 
 const app = express();
 const PORT = process.env.HTTP_PORT || 8080;
