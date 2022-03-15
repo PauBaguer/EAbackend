@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import trackRouter from "./routes/tracks.js";
 import userRouter from "./routes/users.js";
+import bookRouter from "./routes/books.js"
 import logger from "morgan";
 import cors from "cors";
 import { production, development, envConf } from "./config/env.js";
@@ -24,6 +25,7 @@ app.use(cors());
 app.use(express.static("public"));
 app.use("/track", trackRouter);
 app.use("/user", userRouter);
+app.use("/book", bookRouter);
 
 let db = mongoose.connection;
 db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
