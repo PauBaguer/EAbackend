@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import {Schema, model} from "mongoose";
+const Schema = mongoose.Schema;
+const model = mongoose.model;
 //const Editorial = mongoose.model;  To Do :)
 
 const BookSchema = new Schema({
