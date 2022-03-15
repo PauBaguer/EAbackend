@@ -1,12 +1,13 @@
 {
-  "name": "electronseminar",
+  "name": "this-book-backend",
   "version": "1.0.0",
   "description": "",
   "main": "bin/app.js",
   "type": "module",
   "scripts": {
+    "tsc": "tsc -w",
     "start": "tsc && NODE_ENV=production node .",
-    "dev": "tsc && NODE_ENV=development node ."
+    "dev": "tsc && nodemon NODE_ENV=development node ."
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^16.11.26",
+    "nodemon": "^2.0.15",
     "tslint": "^6.1.3"
   }
 }
