@@ -1,0 +1,244 @@
+_type: export
+__export_format: 4
+__export_date: 2022-03-05T11:27:34.090Z
+__export_source: insomnia.desktop.app:v2021.7.2
+resources:
+  - _id: req_04ba27cdf8894d7ab47212fb2fc71852
+    parentId: fld_05175d636cd244cabbbdb6e2303c34cd
+    modified: 1646478987012
+    created: 1646477449158
+    url: localhost:8080/user
+    name: get users
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1641912098148
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_05175d636cd244cabbbdb6e2303c34cd
+    parentId: wrk_96f5762730cf43859a4e395b15d8e1e7
+    modified: 1646478980734
+    created: 1646478980734
+    name: users
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1646478980734
+    _type: request_group
+  - _id: wrk_96f5762730cf43859a4e395b15d8e1e7
+    parentId: null
+    modified: 1646478965105
+    created: 1634892605460
+    name: Express seminar
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_5a584358d6b34229a83e361d969a3eef
+    parentId: fld_05175d636cd244cabbbdb6e2303c34cd
+    modified: 1646478989704
+    created: 1646478811217
+    url: localhost:8080/user/Pau Baguer
+    name: get user by name
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1641912098098
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_201fc468ad244ff18a7aa1ed234cde27
+    parentId: fld_05175d636cd244cabbbdb6e2303c34cd
+    modified: 1646479613585
+    created: 1646477467499
+    url: localhost:8080/user/
+    name: post user
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {	"email": "pau.baguer@upc.edu",
+        	"name": "Pau Baguer",
+         "age": 21
+         }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_18610e271a47487b90a993f6d1a20913
+    authentication: {}
+    metaSortKey: -1641912098048
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_d7ecc2de5d484f4f802627100e4da3d5
+    parentId: wrk_96f5762730cf43859a4e395b15d8e1e7
+    modified: 1646478992782
+    created: 1646478857397
+    url: localhost:8080/user/
+    name: delete user
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1646016227816.5
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8b2107693f95492aa4091f960e19a9e8
+    parentId: fld_f2852c372f4c4329b44643e737414e40
+    modified: 1646478881825
+    created: 1634892613488
+    url: localhost:8080/track
+    name: get tracks
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1645553464167
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_f2852c372f4c4329b44643e737414e40
+    parentId: wrk_96f5762730cf43859a4e395b15d8e1e7
+    modified: 1646478974640
+    created: 1645553474899
+    name: tracks
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1645553474899
+    _type: request_group
+  - _id: req_facf6af1b4774e7b89932df4d15993f6
+    parentId: fld_f2852c372f4c4329b44643e737414e40
+    modified: 1646478883568
+    created: 1645553464067
+    url: localhost:8080/track/
+    name: post track
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {	"author": "Popular",
+        	"name": "Sol Solet"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_18610e271a47487b90a993f6d1a20913
+    authentication: {}
+    metaSortKey: -1645553464142
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_346f436b24954b64a0069bcf0d970a1a
+    parentId: fld_f2852c372f4c4329b44643e737414e40
+    modified: 1646336452799
+    created: 1646335755154
+    url: localhost:8080/track/6221154269beef5b9d767bea
+    name: delete track
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1645553464117
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_5af4e5b97dad477e9297f9ee5f2426e2
+    parentId: fld_f2852c372f4c4329b44643e737414e40
+    modified: 1646336441055
+    created: 1646336441055
+    url: localhost:8080/track/deleteByName/La Barbacoa
+    name: delete track by name
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1645553464092
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_9cc5ca9c5f9970df74dc7e3ac4a6c600b4d13423
+    parentId: wrk_96f5762730cf43859a4e395b15d8e1e7
+    modified: 1634892605487
+    created: 1634892605487
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: 1634892605487
+    _type: environment
+  - _id: jar_9cc5ca9c5f9970df74dc7e3ac4a6c600b4d13423
+    parentId: wrk_96f5762730cf43859a4e395b15d8e1e7
+    modified: 1634892605493
+    created: 1634892605493
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: spc_45f6e283a2ff43e986615511fee898e2
+    parentId: wrk_96f5762730cf43859a4e395b15d8e1e7
+    modified: 1634892605469
+    created: 1634892605469
+    fileName: My Collection
+    contents: ""
+    contentType: yaml
+    _type: api_spec
