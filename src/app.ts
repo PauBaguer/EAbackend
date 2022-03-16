@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import trackRouter from "./routes/tracks.js";
+import clubRouter from "./routes/club.js";
 import userRouter from "./routes/users.js";
 import logger from "morgan";
 import cors from "cors";
@@ -22,7 +22,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(cors());
 app.use(express.static("public"));
-app.use("/track", trackRouter);
+app.use("/club", clubRouter);
 app.use("/user", userRouter);
 
 let db = mongoose.connection;
