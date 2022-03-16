@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import { TrackModel } from "../models/track.js";
+import { ClubModel } from "../models/club.js";
 import { UserModel, User } from "../models/user.js";
 
 async function getAll(req, res) {
