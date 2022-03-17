@@ -4,7 +4,7 @@ import { User } from "./user.js";
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-export interface ChatMessage {
+export interface ChatMessage extends mongoose.Document {
   user: User;
   message: String;
   date: Date;

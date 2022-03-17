@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const model = mongoose.model;
 //const Editorial = mongoose.model;  To Do :)
 
-export interface Book {
+export interface Book extends mongoose.Document {
   title: String;
   category: String;
   ISBN: String;

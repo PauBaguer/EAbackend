@@ -5,7 +5,7 @@ import { ChatMessage } from "./chatMessage.js";
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-export interface Chat {
+export interface Chat extends mongoose.Document {
   name: String;
   messages: ChatMessage[];
   users: User[];

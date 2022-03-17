@@ -22,7 +22,7 @@ async function newChat(req: Request<{}, {}, newChatBody>, res: Response) {
   const userIds: Schema.Types.ObjectId[] = req.body.userIds;
 
   const chat = new ChatModel({ name: name, users: userIds });
-  res.send(201);
+  res.status(201).send();
 }
 
 async function deleteById(req: Request, res: Response) {
@@ -31,7 +31,7 @@ async function deleteById(req: Request, res: Response) {
 
   if (!result.deletedCount)
     res.status(404).send({ message: `Chat with id ${id} not in DB` });
-  res.send(200);
+  res.status(200).send();
 }
 
 async function getLast10MessagesFrom(req: Request, res: Response) {
