@@ -40,4 +40,4 @@ const userSchema = new Schema<User>({
   payments: [{ type: Schema.Types.ObjectId, ref: "Payment" }],
 });
 
-export const UserModel = model<User>("User", userSchema);
+export const UserModel = mongoose.model("User", userSchema);
