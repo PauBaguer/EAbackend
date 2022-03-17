@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { User } from "./user.js";
-import { ChatMessage } from ".chatMessage.js";
+import { ChatMessage } from "./chatMessage.js";
 
 const Schema = mongoose.Schema;
 const model = mongoose.model;
