@@ -1,10 +1,10 @@
-import mongoose,{Document} from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { User } from "./user";
 
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-export interface Club extends Document{
+export interface Club extends Document {
   name: string;
   description: string;
   admin: User;
@@ -18,7 +18,12 @@ const clubSchema = new Schema<Club>({
   description: { type: String, required: true },
   admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  createdAt: { type: Date, required: true, default: Date.now(), modificable: false },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now(),
+    modificable: false,
+  },
   category: { type: String, required: true },
 });
 

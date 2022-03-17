@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import clubRouter from "./routes/club.js";
 import userRouter from "./routes/users.js";
-import bookRouter from "./routes/books.js"
+import bookRouter from "./routes/books.js";
 import logger from "morgan";
 import cors from "cors";
 
@@ -11,7 +11,12 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const app = express();
 const PORT = process.env.HTTP_PORT || 8080;
-const DB_URL = process.env.DB_URL || "mongodb://localhost:27017/thisbook";
+let DB_URL = process.env.DB_URL || "mongodb://localhost:27017/thisbook";
+
+if (process.env.NODE_ENV === "development") {
+  DB_URL = DB_URL.replace("<user>", process.env.DB_USER!);
+  DB_URL = DB_URL.replace("<password>", process.env.DB_PASSWORD!);
+}
 
 app.use(logger("dev"));
 app.use(express.json());
