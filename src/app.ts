@@ -1,5 +1,5 @@
 import express from "express";
-import dotenv from "dotenv";
+import dotenv, { config } from "dotenv";
 import mongoose from "mongoose";
 import clubRouter from "./routes/club.js";
 import userRouter from "./routes/users.js";
@@ -7,7 +7,9 @@ import bookRouter from "./routes/books.js";
 import logger from "morgan";
 import cors from "cors";
 
+//load envs
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+dotenv.config({ path: ".env.secret" });
 
 const app = express();
 const PORT = process.env.HTTP_PORT || 8080;
