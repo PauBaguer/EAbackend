@@ -1,6 +1,4 @@
 import express from "express";
-import mongoose from "mongoose";
-import { TrackModel } from "../models/track.js";
 import { UserModel, User } from "../models/user.js";
 
 async function getAll(req, res) {
@@ -30,8 +28,7 @@ async function postUser(req, res) {
   const newUser = new UserModel({ name: name, email: email, age: age });
   await newUser.save();
 
-  const users: User[] = await UserModel.find();
-  res.status(201).send(users);
+  res.status(201);
 }
 
 async function deleteById(req, res) {
@@ -44,7 +41,7 @@ async function deleteById(req, res) {
   }
 
   const users: User[] = await UserModel.find();
-  res.status(200).send(users);
+  res.status(200);
 }
 
 let router = express.Router();
