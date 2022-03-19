@@ -3,6 +3,15 @@ import { Schema } from "mongoose";
 import { ChatModel, Chat } from "../models/chat.js";
 import { ChatMessage } from "../models/chatMessage.js";
 
+async function getAllChats(req: Request, res: Response) {
+  const allChats = await ChatModel.find().populate("users");
+  if (!allChats) {
+    res.status(500).send({ message: "Not error while querring for chats." });
+    return;
+  }
+  res.status(200).send(allChats);
+}
+
 interface newChatBody {
   name: String;
   userIds: Schema.Types.ObjectId[];
@@ -22,6 +31,7 @@ async function newChat(req: Request<{}, {}, newChatBody>, res: Response) {
   const userIds: Schema.Types.ObjectId[] = req.body.userIds;
 
   const chat = new ChatModel({ name: name, users: userIds });
+  await chat.save();
   res.status(201).send();
 }
 
@@ -66,6 +76,7 @@ async function getLast10MessagesFrom(req: Request, res: Response) {
 
 let router = express.Router();
 
+router.get("/", getAllChats);
 router.get("/:chatId/:messageId", getById);
 router.get("/messages/:id", getLast10MessagesFrom);
 router.post("/", newChat);
