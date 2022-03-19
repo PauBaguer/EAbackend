@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import clubRouter from "./routes/club.js";
 import userRouter from "./routes/users.js";
 import bookRouter from "./routes/books.js";
+import chatRouter from "./routes/chat.js";
 import logger from "morgan";
 import cors from "cors";
 
@@ -27,6 +28,7 @@ app.use(express.static("public"));
 app.use("/club", clubRouter);
 app.use("/user", userRouter);
 app.use("/book", bookRouter);
+app.use("/chat", chatRouter);
 
 let db = mongoose.connection;
 db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
