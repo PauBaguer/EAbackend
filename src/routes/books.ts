@@ -31,8 +31,8 @@ class BookRoutes {
 
     public async addBook(req: Request, res: Response) : Promise<void> {
         console.log(req.body);
-        const {title, category,ISBN,publicationDate,format,quantity,sells,description} = req.body;
-        const newBook = new Book({title, category,ISBN,publicationDate,format,quantity,sells,description});
+        const {title, author,category,ISBN,publicationDate,format,quantity,sells,description} = req.body;
+        const newBook = new Book({title, author,category,ISBN,publicationDate,format,quantity,sells,description});
         await newBook.save();
         res.status(200).send('Book added!');
     }
