@@ -91,7 +91,7 @@ class BookRoutes {
         this.router.get('/releaseDate/:releaseDate', this.getBookByReleaseDate);
         this.router.post('/', this.addBook);
         this.router.put('/:title', this.updateBook);
-        this.router.delete('/:ISBN', this.deleteBook);
+        this.router.delete('/:ISBN', this.deleteBook); // en el : va la categoria que se busca
     }
 }
 const bookRoutes = new BookRoutes();

@@ -32,5 +32,5 @@ const bookSchema = new Schema({
     sells: {type: Number, required: true},
     description: {type: String, required:true}
 })
-//export const  BookModel = mongoose.model('Book', bookSchema);
+//export const  BookModel = mongoose.model('Book', bookSchema); not sure
 export default model("Book", bookSchema);
