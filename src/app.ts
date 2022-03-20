@@ -40,4 +40,4 @@ db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
 db.once("open", () => console.log("MONGODB CONNECTION OPEN"));
 await mongoose.connect(DB_URL);
 
-app.listen(PORT, () => console.log(`listening on ${PORT}`));
+app.listen(PORT, () => console.log(`listening on ${PORT}`)); //
