@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { UserModel, User } from "../models/user.js";
 
 async function getAll(req: Request, res: Response) {
-  const users: User[] = await UserModel.find();
+  const users: User[] = await UserModel.find().populate();
   res.status(200).send(users);
 }
 
