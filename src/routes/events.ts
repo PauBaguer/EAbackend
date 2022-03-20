@@ -153,21 +153,19 @@ async function deleteEvent(req: Request, res: Response): Promise<void> {
   if (eventToDelete == null) {
     res.status(404).send("The event doesn't exist!");
   } else {
-    for (let i = 0; i < eventToDelete.usersList.length; i++) {
-      UserModel.findOneAndUpdate(
-        { _id: eventToDelete.usersList[i] },
-        { $pull: { events: _id } },
-        { safe: true },
-        function (error, success) {
-          if (error) {
-            res
-              .status(500)
-              .send({ message: "Error deleting the event to user." });
-            return;
-          }
+    UserModel.findOneAndUpdate(
+      { _id: eventToDelete.usersList },
+      { $pull: { events: _id } },
+      { safe: true },
+      function (error, success) {
+        if (error) {
+          res
+            .status(500)
+            .send({ message: "Error deleting the event to user." });
+          return;
         }
-      );
-    }
+      }
+    );
     res.status(200).send("Deleted!");
   }
 }
