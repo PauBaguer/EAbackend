@@ -1,5 +1,5 @@
 import express from "express";
-import dotenv, { config } from "dotenv";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 import clubRouter from "./routes/club.js";
 import userRouter from "./routes/users.js";
@@ -8,14 +8,17 @@ import logger from "morgan";
 import cors from "cors";
 
 //load envs
-dotenv.config({ path: `.env.${process.env.NODE_ENV || "development" }` });
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
 dotenv.config({ path: ".env.secret" });
 
 const app = express();
 const PORT = process.env.HTTP_PORT || 8080;
 let DB_URL = process.env.DB_URL || "mongodb://localhost:27017/thisbook";
 
-if (process.env.NODE_ENV === "development" || process.env.NODE_ENV == undefined ) {
+if (
+  process.env.NODE_ENV === "development" ||
+  process.env.NODE_ENV == undefined
+) {
   DB_URL = DB_URL.replace("<user>", process.env.DB_USER!);
   DB_URL = DB_URL.replace("<password>", process.env.DB_PASSWORD!);
 }
