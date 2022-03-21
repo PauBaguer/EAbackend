@@ -1,7 +1,8 @@
-import { Schema, model, Document } from "mongoose";
+import mongoose from "mongoose";
 import { User } from "./user";
+const Schema = mongoose.Schema;
 
-export interface Event extends Document {
+export interface Event {
   name: String;
   description: String;
   admin: User;
@@ -30,4 +31,4 @@ const eventSchema = new Schema({
     },
   },
 });
-export default model("Event", eventSchema);
+export const EventModel = mongoose.model("Event", eventSchema);

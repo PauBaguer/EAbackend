@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import clubRouter from "./routes/club.js";
 import userRouter from "./routes/users.js";
 import bookRouter from "./routes/books.js";
+import chatRouter from "./routes/chat.js";
+import eventRouter from "./routes/events.js";
 import logger from "morgan";
 import cors from "cors";
 
@@ -30,10 +32,12 @@ app.use(express.static("public"));
 app.use("/club", clubRouter);
 app.use("/user", userRouter);
 app.use("/book", bookRouter);
+app.use("/chat", chatRouter);
+app.use("/event", eventRouter);
 
 let db = mongoose.connection;
 db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
 db.once("open", () => console.log("MONGODB CONNECTION OPEN"));
 await mongoose.connect(DB_URL);
 
-app.listen(PORT, () => console.log(`listening on ${PORT}`));
+app.listen(PORT, () => console.log(`listening on ${PORT}`)); //
