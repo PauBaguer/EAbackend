@@ -8,7 +8,6 @@
     "tsc": "tsc -w",
     "build": "tsc",
     "start": "NODE_ENV=production node .",
-    "serve": "NODE_ENV=development nodemon node .",
     "dev": "nodemon node ."
   },
   "author": "",

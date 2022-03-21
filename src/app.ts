@@ -1,5 +1,5 @@
 import express from "express";
-import dotenv, { config } from "dotenv";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 import clubRouter from "./routes/club.js";
 import userRouter from "./routes/users.js";

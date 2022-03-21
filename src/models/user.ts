@@ -27,6 +27,23 @@ export interface User {
   //  payments: Payment[];
 }
 
+export interface UserToSend {
+  name: String;
+  userName: String;
+  age: Number;
+  mail: String;
+  location: { latidude: Number; longitude: Number };
+  money: Number;
+  books: Book[];
+  events: Event[];
+  clubs: Club[];
+  chats: Chat[];
+  createdAt: Date;
+  updatedAt: Date;
+  //  categories: Category[];
+  //  payments: Payment[];
+}
+
 const userSchema = new Schema<User>(
   {
     name: { type: String, required: true },
