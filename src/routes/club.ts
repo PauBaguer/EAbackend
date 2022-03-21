@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { Club, ClubModel } from "../models/club.js";
 import { User, UserModel } from "../models/user.js";
 
@@ -30,67 +30,80 @@ async function newClub(req, res) {
   }
   console.log(user);
 
-  const newClub = new ClubModel({ name: clubName, description: description, admin: user, users: [user],category: category });
+
+  const newClub = new ClubModel({ name: clubName, description: description, admin: user, users: [user], category: category });
   const club = await newClub.save();
 
   console.log(club);
   await UserModel.findOneAndUpdate(
-    { _id: user.id},
-    { $addToSet: { clubs: club }}).then( resUser => {
-      if(!resUser) {
+    { _id: user.id },
+    { $addToSet: { clubs: club } }).then(resUser => {
+      if (!resUser) {
         return res.status(404).send({ message: "Error add user to club." });
       } else {
         return res.status(200).send({ message: `Club add to user ${admin}` });
       }
-    }).catch( error => {
+    }).catch(error => {
       return res.status(400).send({ message: `Error subscribe to club ${error}` });
     });
-
-}
-
-async function deleteClub(req, res) {
-  const { name } = req.params;
-  await ClubModel.findOneAndDelete({ name: name }).then(async club => {
-    if(club) {
-      await club.remove();
-      return res.status(200).send({ message: `Club with name ${name} success deleted` });
-    } else {
-      return res.status(404).send({ message: `Club with name ${name} not found` });
-    }
-  }).catch( error => {
-    return res.status(400).send({ message: `Error delete club ${error}` });
-  });
 }
 
 async function subscribeUserClub(req, res) {
   const { userName, clubName } = req.body;
   const club = await ClubModel.findOne({ name: clubName });
   const user = await UserModel.findOne({ userName: userName });
-  if(!club || !user) {
+
+  if (!club || !user) {
     return res.status(404).send({ message: `Club with name ${userName}, ${clubName} not found` });
   }
 
   await ClubModel.findOneAndUpdate(
-    { _id: club.id},
-    { $addToSet: { users: user }}).then( resClub => {
-      if(!resClub) {
+    { _id: club.id },
+    { $addToSet: { users: user } }).then(resClub => {
+      if (!resClub) {
         return res.status(404).send({ message: "Error add user to club." });
       }
-    }).catch( error => {
+    }).catch(error => {
       return res.status(400).send({ message: `1 Error subscribe to club ${error}` });
     });
 
   await UserModel.findOneAndUpdate(
-    { _id: user.id},
-    { $addToSet: { clubs: club }}).then( resUser => {
-      if(!resUser) {
+    { _id: user.id },
+    { $addToSet: { clubs: club } }).then(resUser => {
+      if (!resUser) {
         return res.status(404).send({ message: "2 Error add user to club." });
       } else {
         return res.status(200).send({ message: `Club add to user ${userName}` });
       }
-    }).catch( error => {
+    }).catch(error => {
       return res.status(400).send({ message: `Error subscribe to club ${error}` });
     });
+}
+
+async function deleteClub(req: Request, res: Response): Promise<void> {
+  const { name } = req.params;
+  const clubToDelete = await ClubModel.findOneAndDelete({
+    name: name,
+  });
+  if (clubToDelete == null) {
+    res.status(404).send("The club doesn't exist!");
+  } else {
+      UserModel.updateMany(
+        { _id: clubToDelete.users },
+        { $pull: { clubs: clubToDelete._id } },
+        { safe: true },
+        function (error, success) {
+          if (error) {
+            res
+              .status(500)
+              .send({ message: "Error deleting the club to user." });
+            return;
+          }
+        }
+      );
+
+    res.status(200).send("Deleted!");
+  }
 }
 
 let router = express.Router();
