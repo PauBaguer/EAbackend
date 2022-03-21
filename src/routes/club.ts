@@ -30,6 +30,7 @@ async function newClub(req, res) {
   }
   console.log(user);
 
+
   const newClub = new ClubModel({ name: clubName, description: description, admin: user, users: [user], category: category });
   const club = await newClub.save();
 
@@ -45,13 +46,13 @@ async function newClub(req, res) {
     }).catch(error => {
       return res.status(400).send({ message: `Error subscribe to club ${error}` });
     });
-
 }
 
 async function subscribeUserClub(req, res) {
   const { userName, clubName } = req.body;
   const club = await ClubModel.findOne({ name: clubName });
   const user = await UserModel.findOne({ userName: userName });
+
   if (!club || !user) {
     return res.status(404).send({ message: `Club with name ${userName}, ${clubName} not found` });
   }
