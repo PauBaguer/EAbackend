@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { Book } from "./book.js"
+import mongoose, { Document } from "mongoose";
+import { Book } from "./book.js";
 import { Event } from "./event";
 import { Club } from "./club.js";
 import { Chat } from "./chat.js";
@@ -9,7 +9,7 @@ import { Chat } from "./chat.js";
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-export interface User {
+export interface User extends Document {
   name: String;
   userName: String;
   age: Number;
@@ -23,6 +23,7 @@ export interface User {
   chats: Chat[];
   createdAt: Date;
   updatedAt: Date;
+  disabled: Boolean;
   //  categories: Category[];
   //  payments: Payment[];
 }
@@ -57,6 +58,7 @@ const userSchema = new Schema<User>(
     events: [{ type: Schema.Types.ObjectId, ref: "Event" }],
     clubs: [{ type: Schema.Types.ObjectId, ref: "Club" }],
     chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
+    disabled: { type: Boolean, default: false },
     // categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
     // payments: [{ type: Schema.Types.ObjectId, ref: "Payment" }],
   },

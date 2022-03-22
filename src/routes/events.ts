@@ -31,7 +31,10 @@ async function createEvent(req: Request, res: Response): Promise<void> {
   console.log(req.body);
   const { name, description, position, category } = req.body;
   const { userName } = req.params;
-  const admin: User | null = await UserModel.findOne({ userName: userName });
+  const admin: User | null = await UserModel.findOne({
+    userName: userName,
+    disabled: false,
+  });
   if (admin == null || admin.userName != userName) {
     res.status(404).send({ message: "Error. User not found." });
     return;
@@ -45,7 +48,7 @@ async function createEvent(req: Request, res: Response): Promise<void> {
     usersList: admin,
   });
   UserModel.findOneAndUpdate(
-    { userName: userName },
+    { userName: userName, disabled: false },
     { $push: { events: newEvent } },
     function (error, success) {
       if (error) {
@@ -60,7 +63,10 @@ async function createEvent(req: Request, res: Response): Promise<void> {
 
 async function joinEvent(req: Request, res: Response): Promise<void> {
   const { userName, _id } = req.params;
-  const user: User | null = await UserModel.findOne({ userName: userName });
+  const user: User | null = await UserModel.findOne({
+    userName: userName,
+    disabled: false,
+  });
   if (user == null || user.userName != userName) {
     res.status(404).send({ message: "Error. User not found." });
     return;
@@ -71,7 +77,7 @@ async function joinEvent(req: Request, res: Response): Promise<void> {
     return;
   }
   UserModel.findOneAndUpdate(
-    { userName: user.userName },
+    { userName: user.userName, disabled: false },
     { $push: { events: event } },
     function (error, success) {
       if (error) {
@@ -95,7 +101,10 @@ async function joinEvent(req: Request, res: Response): Promise<void> {
 
 async function leaveEvent(req: Request, res: Response): Promise<void> {
   const { userName, _id } = req.params;
-  const user: User | null = await UserModel.findOne({ userName: userName });
+  const user: User | null = await UserModel.findOne({
+    userName: userName,
+    disabled: false,
+  });
   if (user == null || user.userName != userName) {
     res.status(404).send({ message: "Error. User not found." });
     return;
@@ -106,7 +115,7 @@ async function leaveEvent(req: Request, res: Response): Promise<void> {
     return;
   }
   UserModel.findOneAndUpdate(
-    { userName: user.userName },
+    { userName: user.userName, disabled: false },
     { $pull: { events: _id } },
     function (error, success) {
       if (error) {
@@ -154,7 +163,7 @@ async function deleteEvent(req: Request, res: Response): Promise<void> {
     res.status(404).send("The event doesn't exist!");
   } else {
     UserModel.findOneAndUpdate(
-      { _id: eventToDelete.usersList },
+      { _id: eventToDelete.usersList, disabled: false },
       { $pull: { events: _id } },
       { safe: true },
       function (error, success) {
