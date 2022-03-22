@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { User } from "./user";
 const Schema = mongoose.Schema;
 
-export interface Event {
+export interface Event extends Document {
   name: String;
   description: String;
   admin: User;
@@ -18,7 +18,7 @@ export interface Event {
 }
 
 const eventSchema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   description: { type: String },
   admin: { type: Schema.Types.ObjectId, ref: "User", required: true },
   creationDate: { type: Date, default: Date.now, required: true },

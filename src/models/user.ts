@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { Book } from "./book.js";
 import { Event } from "./event";
 import { Club } from "./club.js";
@@ -8,7 +8,7 @@ import { Chat } from "./chat.js";
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-export interface User {
+export interface User extends Document {
   name: String;
   userName: String;
   age: Number;
