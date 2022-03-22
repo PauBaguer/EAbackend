@@ -3,7 +3,7 @@ import dotenv, { config } from "dotenv";
 import mongoose from "mongoose";
 import clubRouter from "./routes/club.js";
 import userRouter from "./routes/users.js";
-import bookRouter from "./routes/books.js"
+import bookRouter from "./routes/books.js";
 import logger from "morgan";
 import cors from "cors";
 
