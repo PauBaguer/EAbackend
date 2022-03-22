@@ -23,6 +23,7 @@ export interface User extends Document {
   chats: Chat[];
   createdAt: Date;
   updatedAt: Date;
+  disabled: Boolean;
   //  categories: Category[];
   //  payments: Payment[];
 }
@@ -57,6 +58,7 @@ const userSchema = new Schema<User>(
     events: [{ type: Schema.Types.ObjectId, ref: "Event" }],
     clubs: [{ type: Schema.Types.ObjectId, ref: "Club" }],
     chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
+    disabled: { type: Boolean, default: false },
     // categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
     // payments: [{ type: Schema.Types.ObjectId, ref: "Payment" }],
   },
