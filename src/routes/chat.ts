@@ -20,21 +20,21 @@ async function getAllChats(req: Request, res: Response) {
   res.status(200).send(sortedList);
 }
 
-interface newChatBody {
+interface NewChatBody {
   name: String;
   userIds: Schema.Types.ObjectId[];
 }
 
 async function getById(req: Request, res: Response) {
   const { id } = req.params;
-  const chat = await ChatModel.findById(id);
+  const chat = await ChatModel.findById(id).populate("users");
 
   if (!chat) res.status(404).send({ message: `Chat with id ${id} not in DB` });
 
   res.status(200).send(chat);
 }
 
-async function newChat(req: Request<{}, {}, newChatBody>, res: Response) {
+async function newChat(req: Request<{}, {}, NewChatBody>, res: Response) {
   const name: String = req.body.name;
   const userIds: Schema.Types.ObjectId[] = req.body.userIds;
 
