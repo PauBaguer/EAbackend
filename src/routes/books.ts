@@ -58,14 +58,14 @@ class BookRoutes {
 
     public async addBook(req: Request, res: Response) : Promise<void> {
         console.log(req.body);
-        const {title, author,category,ISBN,publicationDate,format,quantity,sells,description} = req.body;
-        const newBook = new Book({title, author,category,ISBN,publicationDate,format,quantity,sells,description});
+        const {title, author,category,ISBN,publicationDate,format,description,location,editorial} = req.body;
+        const newBook = new Book({title, author,category,ISBN,publicationDate,format,description,location,editorial});
         await newBook.save();
         res.status(200).send('Book added!');
     }
 
     public async updateBook(req: Request, res: Response) : Promise<void> {
-        const bookToUpdate = await Book.findOneAndUpdate ({title: req.params.title}, req.body);
+        const bookToUpdate = await Book.findOneAndUpdate ({_id: req.params.id}, req.body);
         if(bookToUpdate == null){
             res.status(404).send("The book doesn't exist!");
         }
@@ -75,7 +75,7 @@ class BookRoutes {
     }
 
     public async deleteBook(req: Request, res: Response) : Promise<void> {
-        const bookToDelete = await Book.findOneAndDelete ({ISBN:req.params.ISBN}, req.body);
+        const bookToDelete = await Book.findOneAndDelete ({_id:req.params.id}, req.body);
         if (bookToDelete == null){
             res.status(404).send("The book doesn't exist!")
         }
@@ -90,8 +90,8 @@ class BookRoutes {
         this.router.get('/author/:author', this.getBookByAuthor);
         this.router.get('/releaseDate/:releaseDate', this.getBookByReleaseDate);
         this.router.post('/', this.addBook);
-        this.router.put('/:title', this.updateBook);
-        this.router.delete('/:ISBN', this.deleteBook); // en el : va la categoria que se busca
+        this.router.put('/:id', this.updateBook);
+        this.router.delete('/:id', this.deleteBook); // en el : va la categoria que se busca
     }
 }
 const bookRoutes = new BookRoutes();

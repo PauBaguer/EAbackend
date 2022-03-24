@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-
+//import {Editorial} from "./editorial";
 const Schema = mongoose.Schema;
 const model = mongoose.model;
-//const Editorial = mongoose.model;  To Do :)
+
 
 export interface Book{
     
@@ -14,9 +14,11 @@ export interface Book{
         publicationDate:Date,
         //editorial: Schema,  
         format:String,
-        quantity:Number,
-        sells:Number,
-        description: String
+        //quantity:Number,
+        //sells:Number,
+        description: String,
+        location : {latitude : Number, longitude: Number},
+        //editorial: Editorial
    
 }
 const bookSchema = new Schema({
@@ -28,9 +30,11 @@ const bookSchema = new Schema({
     publicationDate: {type: Date, required:true},
     //editorial:{type: Schema.ObjectId, ref: "Editorial"},  
     format: {type: String, required:true},
-    quantity: {type: Number, required:true},
-    sells: {type: Number, required: true},
-    description: {type: String, required:true}
+    //quantity: {type: Number, required:true},
+    //sells: {type: Number, required: true},
+    description: {type: String, required:true},
+    location : {type: {latitude : Number, longitude: Number}},
+    //editorial : { type: Schema.Types.ObjectId, ref: "Editorial", required: true }
 })
 //export const  BookModel = mongoose.model('Book', bookSchema); not sure
 export default model("Book", bookSchema);
