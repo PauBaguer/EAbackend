@@ -55,68 +55,49 @@ class BookRoutes {
     }
   }
 
-  public async addBook(req: Request, res: Response): Promise<void> {
-    console.log(req.body);
-    const {
-      title,
-      author,
-      category,
-      ISBN,
-      publicationDate,
-      format,
-      quantity,
-      sells,
-      description,
-    } = req.body;
-    const newBook = new Book({
-      title,
-      author,
-      category,
-      ISBN,
-      publicationDate,
-      format,
-      quantity,
-      sells,
-      description,
-    });
-    await newBook.save();
-    res.status(200).send("Book added!");
+    public async addBook(req: Request, res: Response) : Promise<void> {
+        console.log(req.body);
+        const {title,category,ISBN,photoURL,publicationDate,format,description,location,rate,editorial} = req.body;
+        const newBook = new Book({title,category,ISBN,photoURL,publicationDate,format,description,location,rate,editorial});
+        await newBook.save();
+        res.status(200).send('Book added!');
+    }
+
+    public async updateBook(req: Request, res: Response) : Promise<void> {
+        const bookToUpdate = await Book.findOneAndUpdate ({_id: req.params.id}, req.body);
+        if(bookToUpdate == null){
+            res.status(404).send("The book doesn't exist!");
+        }
+        else{
+            res.status(200).send('Updated!');
+        }
+    }
+  
+
+    public async deleteBook(req: Request, res: Response) : Promise<void> {
+        const bookToDelete = await Book.findOneAndDelete ({_id:req.params.id}, req.body);
+        if (bookToDelete == null){
+            res.status(404).send("The book doesn't exist!")
+        }
+        else{
+            res.status(200).send('Deleted!');
+        }
+    } 
+    routes() {
+        this.router.get('/', this.getBooks);
+        this.router.get('/:title', this.getBookByName);
+        this.router.get('/category/:category', this.getBookByCategory);
+        this.router.get('/author/:author', this.getBookByAuthor);
+        this.router.get('/releaseDate/:releaseDate', this.getBookByReleaseDate);
+        this.router.post('/', this.addBook);
+        this.router.put('/:id', this.updateBook);
+        this.router.delete('/:id', this.deleteBook); // en el : va la categoria que se busca
+    }
+  
+
+
   }
 
-  public async updateBook(req: Request, res: Response): Promise<void> {
-    const bookToUpdate = await Book.findOneAndUpdate(
-      { title: req.params.title },
-      req.body
-    );
-    if (bookToUpdate == null) {
-      res.status(404).send("The book doesn't exist!");
-    } else {
-      res.status(200).send({ message: "Updated!" });
-    }
-  }
-
-  public async deleteBook(req: Request, res: Response): Promise<void> {
-    const bookToDelete = await Book.findOneAndDelete(
-      { ISBN: req.params.ISBN },
-      req.body
-    );
-    if (bookToDelete == null) {
-      res.status(404).send("The book doesn't exist!");
-    } else {
-      res.status(200).send("Deleted!");
-    }
-  }
-  routes() {
-    this.router.get("/", this.getBooks);
-    this.router.get("/:title", this.getBookByName);
-    this.router.get("/category/:category", this.getBookByCategory);
-    this.router.get("/author/:author", this.getBookByAuthor);
-    this.router.get("/releaseDate/:releaseDate", this.getBookByReleaseDate);
-    this.router.post("/", this.addBook);
-    this.router.put("/:title", this.updateBook);
-    this.router.delete("/:ISBN", this.deleteBook); // en el : va la categoria que se busca
-  }
-}
 const bookRoutes = new BookRoutes();
 
 export default bookRoutes.router;
