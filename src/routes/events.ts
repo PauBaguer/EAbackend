@@ -15,9 +15,9 @@ async function getEvents(req: Request, res: Response): Promise<void> {
   }
 }
 
-async function getEventByName(req: Request, res: Response): Promise<void> {
+async function getEventById(req: Request, res: Response): Promise<void> {
   const eventFound = await EventModel.findOne({
-    name: req.params.name,
+    _id: req.params.eventId,
   }).populate("usersList", "name userName age mail");
   if (eventFound == null) {
     res.status(404).send("The event doesn't exist!");
@@ -28,25 +28,26 @@ async function getEventByName(req: Request, res: Response): Promise<void> {
 
 async function createEvent(req: Request, res: Response): Promise<void> {
   console.log(req.body);
-  const { name, description, category } = req.body;
-  const { userName } = req.params;
+  const { name, description, location, category } = req.body;
+  const { userId } = req.params;
   const admin: User | null = await UserModel.findOne({
-    userName: userName,
+    _id: userId,
     disabled: false,
   });
-  if (admin == null || admin.userName != userName) {
+  if (admin == null || admin._id != userId) {
     res.status(404).send({ message: "Error. User not found." });
     return;
   }
   const newEvent = new EventModel({
     name: name,
     description: description,
+    location: location,
     admin: admin,
     category: category,
     usersList: admin,
   });
   UserModel.findOneAndUpdate(
-    { userName: userName, disabled: false },
+    { _id: userId, disabled: false },
     { $push: { events: newEvent } },
     function (error, success) {
       if (error) {
@@ -60,22 +61,22 @@ async function createEvent(req: Request, res: Response): Promise<void> {
 }
 
 async function joinEvent(req: Request, res: Response): Promise<void> {
-  const { userName, nameEvent } = req.params;
+  const { userId, eventId } = req.params;
   const user: User | null = await UserModel.findOne({
-    userName: userName,
+    _id: userId,
     disabled: false,
   });
-  if (user == null || user.userName != userName) {
+  if (user == null || user._id != userId) {
     res.status(404).send({ message: "Error. User not found." });
     return;
   }
-  const event: Event | null = await EventModel.findOne({ name: nameEvent });
+  const event: Event | null = await EventModel.findOne({ _id: eventId });
   if (event == null) {
     res.status(404).send({ message: "Error. Event not found." });
     return;
   }
   UserModel.findOneAndUpdate(
-    { userName: user.userName, disabled: false },
+    { _id: userId, disabled: false },
     { $push: { events: event } },
     function (error, success) {
       if (error) {
@@ -85,7 +86,7 @@ async function joinEvent(req: Request, res: Response): Promise<void> {
     }
   );
   EventModel.findOneAndUpdate(
-    { name: nameEvent },
+    { _id: eventId },
     { $push: { usersList: user } },
     function (error, success) {
       if (error) {
@@ -94,23 +95,25 @@ async function joinEvent(req: Request, res: Response): Promise<void> {
       }
     }
   );
-  res.status(200).send({ message: "Event added successfully to " + userName });
+  res
+    .status(200)
+    .send({ message: "Event added successfully to " + user.userName });
 }
 
 async function leaveEvent(req: Request, res: Response): Promise<void> {
-  const { userName, nameEvent } = req.params;
-  const user = await UserModel.findOne({ userName: userName, disabled: false });
-  if (user == null || user.userName != userName) {
+  const { userId, eventId } = req.params;
+  const user = await UserModel.findOne({ _id: userId, disabled: false });
+  if (user == null || user._id != userId) {
     res.status(404).send({ message: "Error. User not found." });
     return;
   }
-  const event = await EventModel.findOne({ name: nameEvent });
+  const event = await EventModel.findOne({ _id: eventId });
   if (event == null) {
     res.status(404).send({ message: "Error. Event not found." });
     return;
   }
   UserModel.findOneAndUpdate(
-    { userName: user.userName, disabled: false },
+    { _id: userId, disabled: false },
     { $pull: { events: event._id } },
     function (error, success) {
       if (error) {
@@ -120,7 +123,7 @@ async function leaveEvent(req: Request, res: Response): Promise<void> {
     }
   );
   EventModel.findOneAndUpdate(
-    { name: nameEvent },
+    { _id: eventId },
     { $pull: { usersList: user._id } },
     function (error, success) {
       if (error) {
@@ -130,16 +133,16 @@ async function leaveEvent(req: Request, res: Response): Promise<void> {
       } else {
         res
           .status(200)
-          .send({ message: "Event deleted successfully to " + userName });
+          .send({ message: "Event deleted successfully to " + user.userName });
       }
     }
   );
 }
 
 async function updateEvent(req: Request, res: Response): Promise<void> {
-  const { nameEvent } = req.params;
+  const { eventId } = req.params;
   const eventToUpdate = await EventModel.findOneAndUpdate(
-    { name: nameEvent },
+    { _id: eventId },
     req.body
   );
   if (eventToUpdate == null) {
@@ -150,9 +153,9 @@ async function updateEvent(req: Request, res: Response): Promise<void> {
 }
 
 async function deleteEvent(req: Request, res: Response): Promise<void> {
-  const { nameEvent } = req.params;
+  const { eventId } = req.params;
   const eventToDelete = await EventModel.findOneAndDelete({
-    name: nameEvent,
+    _id: eventId,
   });
   if (eventToDelete == null) {
     res.status(404).send("The event doesn't exist!");
@@ -177,11 +180,11 @@ async function deleteEvent(req: Request, res: Response): Promise<void> {
 let router = express.Router();
 
 router.get("/", getEvents);
-router.get("/:name", getEventByName);
-router.post("/:userName", createEvent);
-router.put("/join/:userName/:nameEvent", joinEvent);
-router.put("/leave/:userName/:nameEvent", leaveEvent);
-router.put("/:nameEvent", updateEvent);
-router.delete("/:nameEvent", deleteEvent);
+router.get("/:eventId", getEventById);
+router.post("/:userId", createEvent);
+router.put("/join/:userId/:eventId", joinEvent);
+router.put("/leave/:userId/:eventId", leaveEvent);
+router.put("/:eventId", updateEvent);
+router.delete("/:eventId", deleteEvent);
 
 export default router;
