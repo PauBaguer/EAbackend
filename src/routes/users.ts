@@ -12,13 +12,21 @@ async function getAll(req: Request, res: Response) {
   res.status(200).send(sortedList);
 }
 
-async function getByName(req: Request, res: Response) {
-  const { name } = req.params;
+async function getById(req: Request, res: Response) {
+  const { id: id } = req.params;
   const user: UserToSend | null = await UserModel.findOne({
-    userName: name,
-  }).select("-password");
+    _id: id,
+  })
+    //.select("-password")
+    .populate([
+      { path: "chats", populate: { path: "users" } },
+      "clubs",
+      "books",
+      "events",
+    ]);
+
   if (!user) {
-    res.status(404).send({ message: `User ${name} not found in DB` });
+    res.status(404).send({ message: `User ${id} not found in DB` });
     return;
   }
 
@@ -28,13 +36,13 @@ async function getByName(req: Request, res: Response) {
 interface RegisterUser {
   name: String;
   userName: String;
-  age: Number;
+  birthDate: Date;
   mail: String;
   password: String;
 }
 
 async function postUser(req: Request<{}, {}, RegisterUser>, res: Response) {
-  const { name, userName, mail, age, password } = req.body; // todo encrypt password and tokens
+  const { name, userName, mail, birthDate, password } = req.body; // todo encrypt password and tokens
   if (await UserModel.findOne({ userName: userName })) {
     res
       .status(406)
@@ -46,7 +54,7 @@ async function postUser(req: Request<{}, {}, RegisterUser>, res: Response) {
     name: name,
     userName: userName,
     mail: mail,
-    age: age,
+    birthDate: birthDate,
     password: password,
   });
   await newUser.save();
@@ -56,10 +64,10 @@ async function postUser(req: Request<{}, {}, RegisterUser>, res: Response) {
 
 async function updateUser(req: Request, res: Response) {
   const { oldUserName } = req.params;
-  const { name, userName, mail, age } = req.body; // todo encrypt password and tokens
+  const { name, userName, mail, birthDate } = req.body; // todo encrypt password and tokens
   const result = await UserModel.updateOne(
     { userName: oldUserName, disabled: false },
-    { name: name, userName: userName, mail: mail, age: age }
+    { name: name, userName: userName, mail: mail, birthDate: birthDate }
   );
 
   if (!result.modifiedCount) {
@@ -117,11 +125,11 @@ async function deleteByUsername(req: Request, res: Response) {
 let router = express.Router();
 
 router.get("/", getAll);
-router.get("/:name", getByName);
-router.get("/:id", enableUser);
+router.get("/:id", getById);
+router.get("/enable/:id", enableUser);
 router.post("/", postUser);
 router.put("/update/:oldUserName", updateUser);
-router.delete("/deleteById/:id", deleteById);
-router.delete("/:userName", deleteByUsername);
+router.delete("/deleteByUsername/:userName", deleteByUsername);
+router.delete("/:id", deleteById);
 
 export default router;
