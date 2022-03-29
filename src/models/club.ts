@@ -1,5 +1,6 @@
 import mongoose, { Document } from "mongoose";
 import { User } from "./user";
+import { Chat } from "./chat.js";
 
 const Schema = mongoose.Schema;
 const model = mongoose.model;
@@ -8,23 +9,22 @@ export interface Club extends Document {
   name: string;
   description: string;
   admin: User;
-  users: User[];
-  createdAt: Number;
-  category: string; //TODO-JA: change category for an object
+  chat: Chat;
+  usersList: User[];
+  category: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const clubSchema = new Schema<Club>({
   name: { type: String, required: true, unique: true },
   description: { type: String, required: true },
   admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  createdAt: {
-    type: Date,
-    required: true,
-    default: Date.now(),
-    modificable: false,
-  },
+  chat: { type: Schema.Types.ObjectId, ref: "Chat" },
+  usersList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   category: { type: String, required: true },
-});
+},
+  { timestamps: true }
+);
 
 export const ClubModel = mongoose.model("Club", clubSchema);
