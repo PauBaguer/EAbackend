@@ -40,6 +40,14 @@ async function newChat(req: Request<{}, {}, NewChatBody>, res: Response) {
 
   const chat = new ChatModel({ name: name, users: userIds });
   await chat.save();
+
+  const result = await UserModel.updateMany(
+    { _id: userIds },
+    { $push: { chats: chat._id } }
+  );
+
+  console.log(result);
+
   res.status(201).send();
 }
 
@@ -126,6 +134,24 @@ async function leaveChat(req: Request, res: Response) {
 
 async function deleteById(req: Request, res: Response) {
   const { id } = req.params;
+
+  const chat = await ChatModel.findById(id);
+
+  if (!chat) {
+    res.status(404).send({ message: `Chat with id ${id} not in DB` });
+    return;
+  }
+
+  const resultUsers = await UserModel.updateMany(
+    { _id: chat.users },
+    { $pull: { chats: chat._id } }
+  );
+
+  if (resultUsers.modifiedCount < 1) {
+    res.status(404).send({ message: `No users where able to be modified` });
+    return;
+  }
+
   const result = await ChatModel.deleteOne({ _id: id });
 
   if (!result.deletedCount)
