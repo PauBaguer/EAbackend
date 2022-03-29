@@ -19,8 +19,8 @@ class BookRoutes {
     }
   }
 
-  public async getBookByName(req: Request, res: Response): Promise<void> {
-    const bookFound = await Book.findOne({ title: req.params.title });
+  public async getBook(req: Request, res: Response): Promise<void> {
+    const bookFound = await Book.findOne({_id:req.params.id}, req.body);
     if (bookFound == null) {
       res.status(404).send("The book doesn't exist!");
     } else {
@@ -85,7 +85,7 @@ class BookRoutes {
     } 
     routes() {
         this.router.get('/', this.getBooks);
-        this.router.get('/:title', this.getBookByName);
+        this.router.get('/:id', this.getBook);
         this.router.get('/category/:category', this.getBookByCategory);
         this.router.get('/author/:author', this.getBookByAuthor);
         this.router.get('/releaseDate/:releaseDate', this.getBookByReleaseDate);
@@ -93,8 +93,6 @@ class BookRoutes {
         this.router.put('/:id', this.updateBook);
         this.router.delete('/:id', this.deleteBook); // en el : va la categoria que se busca
     }
-  
-
 
   }
 
