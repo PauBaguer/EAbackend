@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { UserModel, User, UserToSend } from "../models/user.js";
+import { VerifyToken } from "../middlewares/verifyToken.js";
 
 async function getAll(req: Request, res: Response) {
   const users: User[] = await UserModel.find();
