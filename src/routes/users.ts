@@ -64,10 +64,16 @@ async function postUser(req: Request<{}, {}, RegisterUser>, res: Response) {
 
 async function updateUser(req: Request, res: Response) {
   const { oldUserName } = req.params;
-  const { name, userName, mail, birthDate } = req.body; // todo encrypt password and tokens
+  const { name, userName, mail, birthDate, password } = req.body; // todo encrypt password and tokens
   const result = await UserModel.updateOne(
     { userName: oldUserName, disabled: false },
-    { name: name, userName: userName, mail: mail, birthDate: birthDate }
+    {
+      name: name,
+      userName: userName,
+      mail: mail,
+      birthDate: birthDate,
+      password: password,
+    }
   );
 
   if (!result.modifiedCount) {
