@@ -6,6 +6,8 @@ import userRouter from "./routes/users.js";
 import bookRouter from "./routes/books.js";
 import chatRouter from "./routes/chat.js";
 import eventRouter from "./routes/events.js";
+import authRouter from "./routes/auth.js";
+import { VerifyToken } from "./middlewares/verifyToken.js";
 import logger from "morgan";
 import cors from "cors";
 
@@ -28,12 +30,12 @@ if (
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cors());
-app.use(express.static("public"));
-app.use("/club", clubRouter);
-app.use("/user", userRouter);
-app.use("/book", bookRouter);
-app.use("/chat", chatRouter);
-app.use("/event", eventRouter);
+app.use("/club", VerifyToken, clubRouter);
+app.use("/user", VerifyToken, userRouter);
+app.use("/book", VerifyToken, bookRouter);
+app.use("/chat", VerifyToken, chatRouter);
+app.use("/event", VerifyToken, eventRouter);
+app.use("/auth", authRouter);
 
 let db = mongoose.connection;
 db.on("error", () => console.log("MONGODB CONNECTION ERROR"));

@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { UserModel, User, UserToSend } from "../models/user.js";
+import { VerifyToken } from "../middlewares/verifyToken.js";
 
 async function getAll(req: Request, res: Response) {
   const users: User[] = await UserModel.find();
@@ -64,16 +65,10 @@ async function postUser(req: Request<{}, {}, RegisterUser>, res: Response) {
 
 async function updateUser(req: Request, res: Response) {
   const { oldUserName } = req.params;
-  const { name, userName, mail, birthDate, password } = req.body; // todo encrypt password and tokens
+  const { name, userName, mail, birthDate } = req.body; // todo encrypt password and tokens
   const result = await UserModel.updateOne(
     { userName: oldUserName, disabled: false },
-    {
-      name: name,
-      userName: userName,
-      mail: mail,
-      birthDate: birthDate,
-      password: password,
-    }
+    { name: name, userName: userName, mail: mail, birthDate: birthDate }
   );
 
   if (!result.modifiedCount) {
