@@ -58,7 +58,7 @@ async function singin(req: Request, res: Response) {
   }
 
   const SECRET = process.env.JWT_SECRET;
-  const token = jwt.sign({ id: user._id }, SECRET!, {
+  const token = jwt.sign({ id: user._id, userName: user.userName, role: "admin" }, SECRET!, {
     expiresIn: 86400, //24 hours
   });
 

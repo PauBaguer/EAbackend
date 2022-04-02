@@ -8,9 +8,9 @@ export const VerifyToken = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.headers["x-access-token"];
+    if (!req.headers.authorization) return res.status(401).send({ message: "No authorized" });
+    const token = req.headers.authorization;
 
-    console.log(token);
     if (!token) {
       res.status(403).send({ message: "Token not provided" });
       return;
