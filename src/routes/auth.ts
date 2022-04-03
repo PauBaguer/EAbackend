@@ -29,7 +29,7 @@ async function singup(req: Request, res: Response) {
 
     const savedUser = await newUser.save();
 
-    const token = jwt.sign({ id: savedUser._id }, SECRET!, {
+    const token = jwt.sign({ id: savedUser._id, userName: savedUser.userName, role: "admin" }, SECRET!, {
       expiresIn: 86400, //24 hours
     });
 
