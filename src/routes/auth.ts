@@ -29,9 +29,13 @@ async function singup(req: Request, res: Response) {
 
     const savedUser = await newUser.save();
 
-    const token = jwt.sign({ id: savedUser._id, userName: savedUser.userName, role: "admin" }, SECRET!, {
-      expiresIn: 86400, //24 hours
-    });
+    const token = jwt.sign(
+      { id: savedUser._id, userName: savedUser.userName, role: "admin" },
+      SECRET!,
+      {
+        expiresIn: 86400, //24 hours
+      }
+    );
 
     res.status(201).send({ message: `User singed up`, token });
     return;
@@ -41,28 +45,36 @@ async function singup(req: Request, res: Response) {
 }
 
 async function singin(req: Request, res: Response) {
-  const { userName, password } = req.body;
+  try {
+    const { userName, password } = req.body;
 
-  const user: User | null = await UserModel.findOne({ userName: userName });
-  if (!user) {
-    res.status(404).send({ message: `Bad username or password` });
-    return;
+    const user: User | null = await UserModel.findOne({ userName: userName });
+    if (!user) {
+      res.status(404).send({ message: `Username does not exist` });
+      return;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const encryptedPassword = await bcrypt.hash(password, salt);
+
+    if (!(await comparePassowrd(user.password, password))) {
+      res.status(404).send({ message: `Wrong password. Try again` });
+      return;
+    }
+
+    const SECRET = process.env.JWT_SECRET;
+    const token = jwt.sign(
+      { id: user._id, userName: user.userName, role: "admin" },
+      SECRET!,
+      {
+        expiresIn: 86400, //24 hours
+      }
+    );
+
+    res.send({ message: "singin", token });
+  } catch (e) {
+    res.status(500).send({ message: `Server error: ${e}` });
   }
-
-  const salt = await bcrypt.genSalt(10);
-  const encryptedPassword = await bcrypt.hash(password, salt);
-
-  if (!(await comparePassowrd(user.password, password))) {
-    res.status(404).send({ message: `Bad username or password` });
-    return;
-  }
-
-  const SECRET = process.env.JWT_SECRET;
-  const token = jwt.sign({ id: user._id, userName: user.userName, role: "admin" }, SECRET!, {
-    expiresIn: 86400, //24 hours
-  });
-
-  res.send({ message: "singin", token });
 }
 
 async function comparePassowrd(
