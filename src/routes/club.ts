@@ -45,18 +45,20 @@ async function newClub(req: Request, res: Response) {
     });
 
   const newClub = new ClubModel({ name: clubName, description: description, admin: adminUser, usersList: [adminUser], category: category });
-  const club = await newClub.save();
+  await newClub.save().then(async club => {
+    await UserModel.findOneAndUpdate(
+      { _id: idAdmin },
+      { $addToSet: { clubs: club } }).then(resUser => {
+        if (!resUser) {
+          return res.status(404).send({ message: "Error add user to club." });
+        }
+        res.status(200).send({ message: `Club successful created ${clubName}` });
+      }).catch(error => {
+        res.status(400).send({ message: `Error subscribe to club ${error}` });
+      });
+  });
 
-  await UserModel.findOneAndUpdate(
-    { _id: idAdmin },
-    { $addToSet: { clubs: club } }).then(resUser => {
-      if (!resUser) {
-        return res.status(404).send({ message: "Error add user to club." });
-      }
-      res.status(200).send({ message: `Club successful created ${clubName}` });
-    }).catch(error => {
-      res.status(400).send({ message: `Error subscribe to club ${error}` });
-    });
+
 }
 
 async function deleteClub(req: Request, res: Response) {
@@ -81,8 +83,8 @@ async function deleteClub(req: Request, res: Response) {
 
 async function subscribeUserClub(req: Request, res: Response) {
   const { idUser, idClub } = req.body;
-  const club = await ClubModel.findById( idClub );
-  const user = await UserModel.findById( idUser );
+  const club = await ClubModel.findById(idClub);
+  const user = await UserModel.findById(idUser);
   if (!club || !user) {
     return res.status(404).send({ message: `Club ${idClub} or user ${idUser} not found` });
   }
@@ -137,6 +139,20 @@ async function unsubscribeUserClub(req: Request, res: Response) {
     res.status(400).send({ message: `Error unsubscribe to club ${error}` });
   });
 }
+async function updateClub(req: Request, res: Response) {
+  const { idClub } = req.params;
+  const { name, description } = req.body;
+
+  await ClubModel.findByIdAndUpdate(idClub, { name: name, description: description }).then(clubUpdate => {
+    if (clubUpdate == null) {
+      return res.status(404).send({ message: "Club not found" });
+    }
+    res.status(200).send({ message: "Updated" });
+  }).catch(error => {
+    res.status(400).send({ message: `Error unsubscribe to club ${error}` });
+  });
+
+}
 
 let router = express.Router();
 
@@ -146,4 +162,5 @@ router.post("/", newClub);
 router.delete("/:idClub", deleteClub);
 router.put("/", subscribeUserClub);
 router.put("/unsubscribe", unsubscribeUserClub);
+router.put("/:idClub", updateClub);
 export default router;
