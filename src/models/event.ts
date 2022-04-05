@@ -1,9 +1,10 @@
 import mongoose, { Document } from "mongoose";
 import { Chat } from "./chat";
+import Dates from "./dates";
 import { User } from "./user";
 const Schema = mongoose.Schema;
 
-export interface Event extends Document {
+export interface Event extends Document, Dates {
   name: String;
   description: String;
   location: {

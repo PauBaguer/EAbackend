@@ -1,11 +1,12 @@
 import mongoose, { Document } from "mongoose";
 import { User } from "./user";
 import { Chat } from "./chat.js";
+import Dates from "./dates";
 
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-export interface Club extends Document {
+export interface Club extends Document, Dates {
   name: string;
   description: string;
   admin: User;
@@ -16,14 +17,15 @@ export interface Club extends Document {
   updatedAt: Date;
 }
 
-const clubSchema = new Schema<Club>({
-  name: { type: String, required: true, unique: true },
-  description: { type: String, required: true },
-  admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  chat: { type: Schema.Types.ObjectId, ref: "Chat" },
-  usersList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  category: { type: String, required: true },
-},
+const clubSchema = new Schema<Club>(
+  {
+    name: { type: String, required: true, unique: true },
+    description: { type: String, required: true },
+    admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    chat: { type: Schema.Types.ObjectId, ref: "Chat" },
+    usersList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    category: { type: String, required: true },
+  },
   { timestamps: true }
 );
 
