@@ -5,6 +5,7 @@ import { Club } from "./club.js";
 import { Chat } from "./chat.js";
 import Dates from "./dates.js";
 import { Category } from "./category.js";
+import * as Role from "./role.js";
 
 //import { Category } from "./category";
 //import { Payment } from "./payment";
@@ -24,6 +25,8 @@ export interface User extends Document, Dates {
   chats: Chat[];
   disabled: Boolean;
   categories: Category[];
+  photoURL: String;
+  role: String[];
 }
 
 export interface UserToSend {
@@ -37,6 +40,8 @@ export interface UserToSend {
   clubs: Club[];
   chats: Chat[];
   categories: Category[];
+  photoURL: String;
+  role: String[];
 }
 
 const userSchema = new Schema<User>(
@@ -53,6 +58,8 @@ const userSchema = new Schema<User>(
     chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
     disabled: { type: Boolean, default: false },
     categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
+    photoURL: { type: String, required: true, default: "" },
+    role: [{ type: String, required: true, default: Role.READER }],
   },
   { timestamps: true }
 );
