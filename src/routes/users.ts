@@ -69,25 +69,29 @@ async function postUser(req: Request<{}, {}, RegisterUser>, res: Response) {
     });
     await newUser.save();
 
-    res.status(201).send();
+    res.status(201).send({ message: `User ${userName} created!` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
 }
 
 async function updateUser(req: Request, res: Response) {
-  const { id } = req.params;
-  const { name, userName, mail, birthDate } = req.body; // todo encrypt password and tokens
-  const result = await UserModel.updateOne(
-    { _id: id, disabled: false },
-    { name: name, userName: userName, mail: mail, birthDate: birthDate }
-  );
+  try {
+    const { id } = req.params;
+    const { name, userName, mail, birthDate } = req.body; // todo encrypt password and tokens
+    const result = await UserModel.updateOne(
+      { _id: id, disabled: false },
+      { name: name, userName: userName, mail: mail, birthDate: birthDate }
+    );
 
-  if (!result.modifiedCount) {
-    res.status(404).send({ message: `User ${id} not found in DB` });
-    return;
+    if (!result.modifiedCount) {
+      res.status(404).send({ message: `User ${id} not found in DB` });
+      return;
+    }
+    res.status(200).send({ messge: `User ${id} updated` });
+  } catch (e) {
+    res.status(500).send({ message: `Server error: ${e}` });
   }
-  res.status(200).send();
 }
 
 async function enableUser(req: Request, res: Response) {
@@ -121,7 +125,7 @@ async function deleteById(req: Request, res: Response) {
       return;
     }
 
-    res.status(200).send();
+    res.status(200).send({ message: `User ${id} deleted!` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
@@ -141,7 +145,7 @@ async function deleteByUsername(req: Request, res: Response) {
       return;
     }
 
-    res.status(200).send();
+    res.status(200).send({ message: `User ${userName} deleted!` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }

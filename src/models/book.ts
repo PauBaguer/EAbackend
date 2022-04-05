@@ -1,4 +1,5 @@
 import mongoose, { Document } from "mongoose";
+import { Category } from "./category";
 import Dates from "./dates";
 const Schema = mongoose.Schema;
 const model = mongoose.model;
@@ -11,13 +12,15 @@ export interface Book extends Document, Dates {
   publishedDate: Date;
   editorial: String;
   rate: Number;
-  categories: String[];
+  categories: Category[];
 }
 
 const bookSchema = new Schema(
   {
     title: { type: String, required: true },
-    categories: { type: [String], required: true },
+    categories: [
+      { type: Schema.Types.ObjectId, required: true, ref: "Category" },
+    ],
     ISBN: { type: String, required: true, unique: true },
     photoURL: { type: String },
     publishedDate: { type: Date },

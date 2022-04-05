@@ -1,4 +1,5 @@
 import mongoose, { Document } from "mongoose";
+import { Category } from "./category";
 import { Chat } from "./chat";
 import Dates from "./dates";
 import { User } from "./user";
@@ -17,7 +18,7 @@ export interface Event extends Document, Dates {
   chat: Chat;
   eventDate: Date;
   usersList: User[];
-  category: String[];
+  category: Category[];
 }
 
 const eventSchema = new Schema(
@@ -34,7 +35,9 @@ const eventSchema = new Schema(
     chat: { type: Schema.Types.ObjectId, ref: "Chat" },
     eventDate: { type: Date },
     usersList: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    category: [{ type: String, required: true }],
+    category: [
+      { type: Schema.Types.ObjectId, required: true, ref: "Category" },
+    ],
   },
   { timestamps: true }
 );

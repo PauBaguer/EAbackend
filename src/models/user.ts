@@ -23,7 +23,7 @@ export interface User extends Document, Dates {
   clubs: Club[];
   chats: Chat[];
   disabled: Boolean;
-  categories: string[];
+  categories: Category[];
 }
 
 export interface UserToSend {
