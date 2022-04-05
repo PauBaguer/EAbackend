@@ -30,12 +30,13 @@ async function singup(req: Request, res: Response) {
     const savedUser = await newUser.save();
 
     const token = jwt.sign(
-      { id: savedUser._id, userName: savedUser.userName, role: "admin" },
+      { id: savedUser._id, userName: savedUser.userName, role: savedUser.role },
       SECRET!,
       {
         expiresIn: 86400, //24 hours
       }
     );
+    console.log(savedUser);
 
     res.status(201).send({ message: `User singed up`, token });
     return;
@@ -64,7 +65,7 @@ async function singin(req: Request, res: Response) {
 
     const SECRET = process.env.JWT_SECRET;
     const token = jwt.sign(
-      { id: user._id, userName: user.userName, role: "admin" },
+      { id: user._id, userName: user.userName, role: user.role },
       SECRET!,
       {
         expiresIn: 86400, //24 hours

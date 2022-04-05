@@ -58,8 +58,8 @@ const userSchema = new Schema<User>(
     chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
     disabled: { type: Boolean, default: false },
     categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
-    photoURL: { type: String, required: true, default: "" },
-    role: [{ type: String, required: true, default: Role.READER }],
+    photoURL: { type: String, default: "" },
+    role: { type: [String], default: ["READER"] },
   },
   { timestamps: true }
 );

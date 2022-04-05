@@ -58,7 +58,7 @@ async function newChat(req: Request<{}, {}, NewChatBody>, res: Response) {
 
     console.log(result);
 
-    res.status(201).send({ messge: `Chat '${name}' created!` });
+    res.status(201).send({ message: `Chat '${name}' created!` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
@@ -180,7 +180,7 @@ async function deleteById(req: Request, res: Response) {
 
     if (!result.deletedCount)
       res.status(404).send({ message: `Chat with id ${id} not in DB` });
-    res.status(200).send({ messge: `Chat ${id} deleted` });
+    res.status(200).send({ message: `Chat ${id} deleted` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }

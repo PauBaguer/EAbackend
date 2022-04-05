@@ -1,5 +1,5 @@
-export const WRITTER = "WRITTER";
+export const WRITER = "WRITER";
 export const READER = "READER";
 export const ADMIN = "ADMIN";
 
-export const roles = [WRITTER, READER, ADMIN];
+export const roles = [WRITER, READER, ADMIN];
