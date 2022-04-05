@@ -4,6 +4,7 @@ import { Event } from "./event";
 import { Club } from "./club.js";
 import { Chat } from "./chat.js";
 import Dates from "./dates.js";
+import { Category } from "./category.js";
 
 //import { Category } from "./category";
 //import { Payment } from "./payment";
@@ -35,7 +36,7 @@ export interface UserToSend {
   events: Event[];
   clubs: Club[];
   chats: Chat[];
-  categories: String[];
+  categories: Category[];
 }
 
 const userSchema = new Schema<User>(
@@ -51,7 +52,7 @@ const userSchema = new Schema<User>(
     clubs: [{ type: Schema.Types.ObjectId, ref: "Club" }],
     chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
     disabled: { type: Boolean, default: false },
-    categories: [{ type: String }],
+    categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
   },
   { timestamps: true }
 );
