@@ -26,6 +26,8 @@ async function getBook(req: Request, res: Response): Promise<void> {
     res.status(500).send({ message: `Server error: ${e}` });
   }
 }
+
+//todo arreclar category
 async function getBookByCategory(req: Request, res: Response): Promise<void> {
   try {
     const bookFound = await BookModel.find({ category: req.params.category });
@@ -70,7 +72,16 @@ async function getBookByReleaseDate(
 
 async function addBook(req: Request, res: Response): Promise<void> {
   try {
-    const { title, category, ISBN, photoURL, publicationDate, description, rate, editorial, } = req.body;
+    const {
+      title,
+      category,
+      ISBN,
+      photoURL,
+      publicationDate,
+      description,
+      rate,
+      editorial,
+    } = req.body;
     const newBook = new BookModel({
       title: title,
       ISBN: ISBN,

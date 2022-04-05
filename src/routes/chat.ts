@@ -58,7 +58,7 @@ async function newChat(req: Request<{}, {}, NewChatBody>, res: Response) {
 
     console.log(result);
 
-    res.status(201).send();
+    res.status(201).send({ message: `Chat '${name}' created!` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
@@ -66,7 +66,7 @@ async function newChat(req: Request<{}, {}, NewChatBody>, res: Response) {
 
 async function joinChat(req: Request, res: Response) {
   try {
-    const { chatId, username } = req.params;
+    const { chatId, userId } = req.params;
 
     const chat: Chat | null = await ChatModel.findById(chatId);
 
@@ -76,17 +76,17 @@ async function joinChat(req: Request, res: Response) {
     }
 
     const user: User | null = await UserModel.findOne({
-      userName: username,
+      _id: userId,
       disabled: false,
     });
 
     if (!user) {
-      res.status(404).send({ message: `User ${username} not found` });
+      res.status(404).send({ message: `User ${userId} not found` });
       return;
     }
 
     const usrResult = await UserModel.updateOne(
-      { userName: username, disabled: false },
+      { _id: userId, disabled: false },
       { $push: { chats: chatId } }
     );
 
@@ -105,7 +105,9 @@ async function joinChat(req: Request, res: Response) {
       return;
     }
 
-    res.status(200).send();
+    res
+      .status(200)
+      .send({ message: `User ${userId} joined the Chat ${chatId}` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
@@ -178,7 +180,7 @@ async function deleteById(req: Request, res: Response) {
 
     if (!result.deletedCount)
       res.status(404).send({ message: `Chat with id ${id} not in DB` });
-    res.status(200).send();
+    res.status(200).send({ message: `Chat ${id} deleted` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
@@ -224,7 +226,7 @@ router.get("/", getAllChats);
 router.get("/:id", getById);
 router.get("/messages/:id", getLast10MessagesFrom);
 router.post("/", newChat);
-router.post("/join/:chatId/:username", joinChat);
+router.post("/join/:chatId/:userId", joinChat);
 router.delete("/leave/:chatId/:username", leaveChat);
 router.delete("/:id", deleteById);
 export default router;
