@@ -76,22 +76,18 @@ async function postUser(req: Request<{}, {}, RegisterUser>, res: Response) {
 }
 
 async function updateUser(req: Request, res: Response) {
-  try {
-    const { oldUserName } = req.params;
-    const { name, userName, mail, birthDate } = req.body; // todo encrypt password and tokens
-    const result = await UserModel.updateOne(
-      { userName: oldUserName, disabled: false },
-      { name: name, userName: userName, mail: mail, birthDate: birthDate }
-    );
+  const { id } = req.params;
+  const { name, userName, mail, birthDate } = req.body; // todo encrypt password and tokens
+  const result = await UserModel.updateOne(
+    { _id: id, disabled: false },
+    { name: name, userName: userName, mail: mail, birthDate: birthDate }
+  );
 
-    if (!result.modifiedCount) {
-      res.status(404).send({ message: `User ${oldUserName} not found in DB` });
-      return;
-    }
-    res.status(200).send();
-  } catch (e) {
-    res.status(500).send({ message: `Server error: ${e}` });
+  if (!result.modifiedCount) {
+    res.status(404).send({ message: `User ${id} not found in DB` });
+    return;
   }
+  res.status(200).send();
 }
 
 async function enableUser(req: Request, res: Response) {
@@ -157,7 +153,7 @@ router.get("/", getAll);
 router.get("/:id", getById);
 router.get("/enable/:id", enableUser);
 router.post("/", postUser);
-router.put("/update/:oldUserName", updateUser);
+router.put("/update/:id", updateUser);
 router.delete("/deleteByUsername/:userName", deleteByUsername);
 router.delete("/:id", deleteById);
 
