@@ -204,6 +204,24 @@ async function unsubscribeUserClub(req: Request, res: Response) {
   }
 }
 
+async function updateClub(req: Request, res: Response) {
+  try {
+    const { idClub } = req.params;
+    const { name, description } = req.body;
+
+    await ClubModel.findByIdAndUpdate(idClub, { name: name, description: description }).then(clubUpdate => {
+      if (clubUpdate == null) {
+        return res.status(404).send({ message: "Club not found" });
+      }
+      res.status(200).send({ message: "Updated" });
+    }).catch(error => {
+      res.status(400).send({ message: `Error unsubscribe to club ${error}` });
+    });
+  } catch (e) {
+    res.status(500).send({ message: `Server error: ${e}` });
+  }
+}
+
 let router = express.Router();
 
 router.get("/", getClubs);
@@ -212,4 +230,5 @@ router.post("/", newClub);
 router.delete("/:idClub", deleteClub);
 router.put("/", subscribeUserClub);
 router.put("/unsubscribe", unsubscribeUserClub);
+router.put("/:idClub", updateClub);
 export default router;

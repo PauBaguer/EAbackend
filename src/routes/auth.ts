@@ -71,7 +71,7 @@ async function singin(req: Request, res: Response) {
       }
     );
 
-    res.send({ message: "singin", token });
+    res.status(200).send({ message: "singin", token });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
