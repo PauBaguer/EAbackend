@@ -7,7 +7,8 @@ import bookRouter from "./routes/books.js";
 import chatRouter from "./routes/chat.js";
 import eventRouter from "./routes/events.js";
 import authRouter from "./routes/auth.js";
-import { VerifyToken } from "./middlewares/verifyToken.js";
+import managementRouter from "./routes/management.js";
+import { VerifyToken, VeryfyAdminToken } from "./middlewares/verifyToken.js";
 import logger from "morgan";
 import cors from "cors";
 
@@ -36,6 +37,7 @@ app.use("/book", VerifyToken, bookRouter);
 app.use("/chat", VerifyToken, chatRouter);
 app.use("/event", VerifyToken, eventRouter);
 app.use("/auth", authRouter);
+app.use("/management", VeryfyAdminToken, managementRouter);
 
 let db = mongoose.connection;
 db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
