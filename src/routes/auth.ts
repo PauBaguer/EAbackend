@@ -8,7 +8,7 @@ async function singup(req: Request, res: Response) {
     const { name, userName, mail, birthDate, password } = req.body; // todo encrypt password and tokens
 
     const salt = await bcrypt.genSalt(10);
-    const encryptedPassword = password; // await bcrypt.hash(password, salt)
+    const encryptedPassword = await bcrypt.hash(password, salt);
 
     if (await UserModel.findOne({ userName: userName })) {
       res
@@ -55,10 +55,10 @@ async function singin(req: Request, res: Response) {
       return;
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const encryptedPassword = await bcrypt.hash(password, salt);
+    // const salt = await bcrypt.genSalt(10);
+    // const encryptedPassword = await bcrypt.hash(password, salt);
 
-    if (!(await comparePassowrd(user.password, password))) {
+    if (!(await bcrypt.compare(password as string, user.password as string))) {
       res.status(404).send({ message: `Wrong password. Try again` });
       return;
     }
@@ -76,16 +76,6 @@ async function singin(req: Request, res: Response) {
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
-}
-
-async function comparePassowrd(
-  password: String,
-  receivedPassword: String
-): Promise<Boolean> {
-  console.log(password);
-  console.log(receivedPassword);
-  //return await bcrypt.compare(password,receivedPassword)
-  return password === receivedPassword;
 }
 
 let router = express.Router();
