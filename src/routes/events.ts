@@ -23,7 +23,9 @@ async function getEventById(req: Request, res: Response): Promise<void> {
   try {
     const eventFound = await EventModel.findOne({
       _id: req.params.eventId,
-    }).populate("usersList", "name userName age mail");
+    }).populate("usersList", "name userName age mail")
+    .populate("admin", "name userName age mail")
+    .populate("category");
     if (eventFound == null) {
       res.status(404).send({ message: "The event doesn't exist!" });
     } else {
@@ -82,6 +84,8 @@ async function createEvent(req: Request, res: Response): Promise<void> {
 async function joinEvent(req: Request, res: Response): Promise<void> {
   try {
     const { userId, eventId } = req.params;
+    console.log("User: " + userId);
+    console.log("Event: " + eventId);
     const user: User | null = await UserModel.findOne({
       _id: userId,
       disabled: false,
