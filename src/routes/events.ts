@@ -1,13 +1,14 @@
 import express, { Request, Response } from "express";
+import { Category, CategoryModel } from "../models/category.js";
 import { EventModel, Event } from "../models/event.js";
 import { User, UserModel } from "../models/user.js";
 
 async function getEvents(req: Request, res: Response): Promise<void> {
   try {
-    const allEvents = await EventModel.find().populate(
-      "usersList",
-      "name userName age mail"
-    );
+    const allEvents = await EventModel.find()
+      .populate("usersList", "name userName age mail")
+      .populate("admin", "name userName age mail")
+      .populate("category");
     if (allEvents.length == 0) {
       res.status(404).send({ message: "There are no events yet!" });
     } else {
@@ -36,7 +37,8 @@ async function getEventById(req: Request, res: Response): Promise<void> {
 async function createEvent(req: Request, res: Response): Promise<void> {
   try {
     console.log(req.body);
-    const { name, description, location, category } = req.body;
+    const { name, description, location, category, eventDate, usersList } =
+      req.body;
     const { userId } = req.params;
     const admin: User | null = await UserModel.findOne({
       _id: userId,
@@ -46,14 +48,19 @@ async function createEvent(req: Request, res: Response): Promise<void> {
       res.status(404).send({ message: "Error. User not found." });
       return;
     }
+    const categories: Category[] | null = await CategoryModel.find({
+      name: category.split(","),
+    });
     const newEvent = new EventModel({
       name: name,
       description: description,
       location: location,
       admin: admin,
-      category: category,
-      usersList: admin,
+      category: categories,
+      usersList: usersList,
+      eventDate: eventDate,
     });
+    await newEvent.save();
     UserModel.findOneAndUpdate(
       { _id: userId, disabled: false },
       { $push: { events: newEvent } },
@@ -64,7 +71,6 @@ async function createEvent(req: Request, res: Response): Promise<void> {
         }
       }
     );
-    await newEvent.save();
     res.status(201).send(newEvent);
   } catch (e) {
     res
@@ -168,6 +174,11 @@ async function leaveEvent(req: Request, res: Response): Promise<void> {
 
 async function updateEvent(req: Request, res: Response): Promise<void> {
   try {
+    const event = req.body;
+    const categories: Category[] | null = await CategoryModel.find({
+      name: event.category.split(","),
+    });
+    event.category = categories;
     const { eventId } = req.params;
     const eventToUpdate = await EventModel.findOneAndUpdate(
       { _id: eventId },

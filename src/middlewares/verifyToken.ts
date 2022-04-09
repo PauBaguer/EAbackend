@@ -24,7 +24,7 @@ export const VerifyToken = async (
     try {
       decoded = jwt.verify(token!, SECRET!);
     } catch (e) {
-      res.status(403).send({ message: "User not authorized" });
+      res.status(403).send({ message: "Invalid token" });
       return;
     }
 

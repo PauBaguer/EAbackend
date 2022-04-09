@@ -37,7 +37,7 @@ app.use("/book", VerifyToken, bookRouter);
 app.use("/chat", VerifyToken, chatRouter);
 app.use("/event", VerifyToken, eventRouter);
 app.use("/auth", authRouter);
-app.use("/management", VeryfyAdminToken, managementRouter);
+app.use("/management", VerifyToken, managementRouter);
 
 let db = mongoose.connection;
 db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
