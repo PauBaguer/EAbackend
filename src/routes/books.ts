@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { Book, BookModel } from "../models/book.js";
+import { Category, CategoryModel } from "../models/category.js";
 
 async function getBooks(req: Request, res: Response): Promise<void> {
   try {
@@ -82,15 +83,19 @@ async function addBook(req: Request, res: Response): Promise<void> {
       rate,
       editorial,
     } = req.body;
+    const categories: Category[] | null = await CategoryModel.find({
+      name: category.split(","),
+    });
     const newBook = new BookModel({
       title: title,
+      categories: categories,
       ISBN: ISBN,
       photoURL: photoURL,
-      description: description,
       publishedDate: publicationDate,
-      editorial: editorial,
+      description: description,
       rate: rate,
-      categories: category,
+      editorial: editorial,
+  
     });
     await newBook.save();
     res.status(200).send({ message: "Book added!" });
