@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { Book, BookModel } from "../models/book.js";
+import { Category, CategoryModel } from "../models/category.js";
 
 async function getBooks(req: Request, res: Response): Promise<void> {
   try {
@@ -27,12 +28,12 @@ async function getBook(req: Request, res: Response): Promise<void> {
   }
 }
 
-//todo arreclar category
+//get book by categories POR ID
 async function getBookByCategory(req: Request, res: Response): Promise<void> {
   try {
-    const bookFound = await BookModel.find({ category: req.params.category });
-    if (bookFound == null) {
-      res.status(404).send({ message: "The book doesn't exist!" });
+    const bookFound = await BookModel.find({ categories: req.params.categories });
+    if (bookFound == null || bookFound.length == 0) {
+      res.status(404).send({ message: "There are no books with this category!" });
     } else {
       res.status(200).send(bookFound);
     }
@@ -40,6 +41,7 @@ async function getBookByCategory(req: Request, res: Response): Promise<void> {
     res.status(500).send({ message: `Server error: ${e}` });
   }
 }
+/*
 async function getBookByAuthor(req: Request, res: Response): Promise<void> {
   try {
     const bookFound = await BookModel.find({ author: req.params.author });
@@ -52,6 +54,7 @@ async function getBookByAuthor(req: Request, res: Response): Promise<void> {
     res.status(500).send({ message: `Server error: ${e}` });
   }
 }
+*/
 async function getBookByReleaseDate(
   req: Request,
   res: Response
@@ -82,15 +85,19 @@ async function addBook(req: Request, res: Response): Promise<void> {
       rate,
       editorial,
     } = req.body;
+    const categories: Category[] | null = await CategoryModel.find({
+      name: category.split(","),
+    });
     const newBook = new BookModel({
       title: title,
+      categories: categories,
       ISBN: ISBN,
       photoURL: photoURL,
-      description: description,
       publishedDate: publicationDate,
-      editorial: editorial,
+      description: description,
       rate: rate,
-      categories: category,
+      editorial: editorial,
+  
     });
     await newBook.save();
     res.status(200).send({ message: "Book added!" });
@@ -135,8 +142,8 @@ let router = express.Router();
 
 router.get("/", getBooks);
 router.get("/:id", getBook);
-router.get("/category/:category", getBookByCategory);
-router.get("/author/:author", getBookByAuthor);
+router.get("/category/:categories", getBookByCategory);
+//router.get("/author/:author", getBookByAuthor);
 router.get("/releaseDate/:releaseDate", getBookByReleaseDate);
 router.post("/", addBook);
 router.put("/:id", updateBook);
