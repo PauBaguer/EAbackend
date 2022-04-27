@@ -85,8 +85,7 @@ async function newClub(req: Request, res: Response) {
           return res.status(404).send({ message: "Error add user to club." });
         }
         res
-          .status(200)
-          .send({ message: `Club successful created ${clubName}` });
+          .status(200).send(club);
       })
       .catch((error) => {
         res.status(400).send({ message: `Error subscribe to club ${error}` });
