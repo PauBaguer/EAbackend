@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { Category, CategoryModel } from "../models/category.js";
 import { ClubModel } from "../models/club.js";
 import { UserModel } from "../models/user.js";
 
@@ -6,6 +7,7 @@ async function getClubs(req: Request, res: Response) {
   try {
     await ClubModel.find()
       .populate("admin", "userName mail")
+      .populate("category")
       .sort("-createdAt")
       .then(async (clubs) => {
         res.status(200).send(clubs);
@@ -61,12 +63,16 @@ async function newClub(req: Request, res: Response) {
         return res.status(400).send({ message: `Error post club: ${error}` });
       });
 
+    const categories: Category[] | null = await CategoryModel.find({
+      name: category.split(","),
+    });
+
     const newClub = new ClubModel({
       name: clubName,
       description: description,
       admin: adminUser,
       usersList: [adminUser],
-      category: category,
+      category: categories,
     });
     const club = await newClub.save();
 
