@@ -2,10 +2,11 @@ import express, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { User, UserModel } from "../models/user.js";
 import jwt from "jsonwebtoken";
+import { Category, CategoryModel } from "../models/category.js";
 
 async function singup(req: Request, res: Response) {
   try {
-    const { name, userName, mail, birthDate, password } = req.body; // todo encrypt password and tokens
+    const { name, userName, mail, birthDate, password, role, category } = req.body;
 
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
@@ -16,6 +17,10 @@ async function singup(req: Request, res: Response) {
         .send({ message: "There is already a user with the same username." });
       return;
     }
+    const categories: Category[] | null = await CategoryModel.find({
+      name: category
+    });
+    console.log(categories)
 
     const newUser = new UserModel({
       name: name,
@@ -23,6 +28,8 @@ async function singup(req: Request, res: Response) {
       mail: mail,
       birthDate: birthDate,
       password: encryptedPassword,
+      categories: categories,
+      role: role,
     });
 
     const SECRET = process.env.JWT_SECRET;
