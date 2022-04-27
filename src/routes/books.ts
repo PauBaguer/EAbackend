@@ -80,7 +80,7 @@ async function addBook(req: Request, res: Response): Promise<void> {
       category,
       ISBN,
       photoURL,
-      publicationDate,
+      publishedDate,
       description,
       rate,
       editorial,
@@ -90,14 +90,14 @@ async function addBook(req: Request, res: Response): Promise<void> {
     });
     const newBook = new BookModel({
       title: title,
-      categories: categories,
+      category: categories,
       ISBN: ISBN,
       photoURL: photoURL,
-      publishedDate: publicationDate,
+      publishedDate: publishedDate,
       description: description,
       rate: rate,
       editorial: editorial,
-  
+
     });
     await newBook.save();
     res.status(200).send({ message: "Book added!" });

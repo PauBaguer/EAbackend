@@ -7,18 +7,18 @@ const model = mongoose.model;
 export interface Book extends Document, Dates {
   title: String;
   ISBN: String;
-  photoURL: String[];
+  photoURL: String;
   description: String;
   publishedDate: Date;
   editorial: String;
   rate: Number;
-  categories: Category[];
+  category: Category[];
 }
 
 const bookSchema = new Schema(
   {
     title: { type: String, required: true },
-    categories: [
+    category: [
       { type: Schema.Types.ObjectId, required: true, ref: "Category" },
     ],
     ISBN: { type: String, required: true, unique: true },
