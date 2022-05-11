@@ -20,13 +20,13 @@ const app = express();
 const PORT = process.env.HTTP_PORT || 8080;
 let DB_URL = process.env.DB_URL || "mongodb://localhost:27017/thisbook";
 
-if (
-  process.env.NODE_ENV === "development" ||
-  process.env.NODE_ENV == undefined
-) {
-  DB_URL = DB_URL.replace("<user>", process.env.DB_USER!);
-  DB_URL = DB_URL.replace("<password>", process.env.DB_PASSWORD!);
-}
+//if (
+//  process.env.NODE_ENV === "development" ||
+//  process.env.NODE_ENV == undefined
+//) {
+DB_URL = DB_URL.replace("<user>", process.env.DB_USER!);
+DB_URL = DB_URL.replace("<password>", process.env.DB_PASSWORD!);
+//}
 
 app.use(logger("dev"));
 app.use(express.json());
