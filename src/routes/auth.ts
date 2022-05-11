@@ -6,7 +6,8 @@ import { Category, CategoryModel } from "../models/category.js";
 
 async function singup(req: Request, res: Response) {
   try {
-    const { name, userName, mail, birthDate, password, role, category } = req.body;
+    const { name, userName, mail, birthDate, password, role, category } =
+      req.body;
 
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
@@ -18,9 +19,9 @@ async function singup(req: Request, res: Response) {
       return;
     }
     const categories: Category[] | null = await CategoryModel.find({
-      name: category
+      name: category,
     });
-    console.log(categories)
+    console.log(categories);
 
     const newUser = new UserModel({
       name: name,
@@ -58,7 +59,9 @@ async function singin(req: Request, res: Response) {
 
     const user: User | null = await UserModel.findOne({ userName: userName });
     if (!user) {
-      res.status(404).send({ message: `Username does not exist` });
+      res
+        .status(404)
+        .send({ message: `Username password combination does not exist` });
       return;
     }
 
@@ -66,7 +69,9 @@ async function singin(req: Request, res: Response) {
     // const encryptedPassword = await bcrypt.hash(password, salt);
 
     if (!(await bcrypt.compare(password as string, user.password as string))) {
-      res.status(404).send({ message: `Wrong password. Try again` });
+      res
+        .status(404)
+        .send({ message: `Username password combination does not exist` });
       return;
     }
 
