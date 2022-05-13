@@ -90,9 +90,43 @@ async function singin(req: Request, res: Response) {
   }
 }
 
+async function verifyToken(req: Request, res: Response) {
+  try {
+    const token = req.body.token;
+    if (!token) {
+      res.status(403).send({ message: "Token not provided" });
+      return;
+    }
+    if (!(typeof token === "string")) throw "Token not a string";
+
+    const SECRET = process.env.JWT_SECRET;
+    let decoded;
+    try {
+      decoded = jwt.verify(token!, SECRET!);
+    } catch (e) {
+      res.status(403).send({ message: "Invalid token" });
+      return;
+    }
+
+    console.log(decoded!);
+
+    const user = await UserModel.findOne({ _id: decoded!.id, disabled: false });
+    if (!user) {
+      res.status(403).send({ message: "User not authorized" });
+      return;
+    }
+
+    res.status(200).send({ message: "User Logged in" });
+  } catch (e) {
+    res.status(500).send({ message: `Server error: ${e}` });
+    return;
+  }
+}
+
 let router = express.Router();
 
 router.post("/singup", singup);
 router.post("/singin", singin);
+router.post("/verifyToken", verifyToken);
 
 export default router;
