@@ -26,6 +26,7 @@ async function getClub(req: Request, res: Response) {
     await ClubModel.findById(idClub)
       .populate("admin", "userName mail")
       .populate("usersList", "userName mail")
+      .populate("category")
       .then((club) => {
         if (club) {
           return res.status(200).send(club);
