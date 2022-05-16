@@ -25,10 +25,11 @@ async function getById(req: Request, res: Response) {
     })
       //.select("-password")
       .populate([
-        { path: "chats", populate: { path: "users" } },
-        "clubs",
+        "chats",
+        { path: "clubs", populate: { path: "category" } },
         "books",
-        "events",
+        { path: "events", populate: { path: "category" } },
+        "categories",
       ]);
 
     if (!user) {
