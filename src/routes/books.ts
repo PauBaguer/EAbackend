@@ -84,6 +84,7 @@ async function addBook(req: Request, res: Response): Promise<void> {
       description,
       rate,
       editorial,
+      writer,
     } = req.body;
     const categories: Category[] | null = await CategoryModel.find({
       name: category.split(","),
@@ -97,6 +98,7 @@ async function addBook(req: Request, res: Response): Promise<void> {
       description: description,
       rate: rate,
       editorial: editorial,
+      writer: writer,
 
     });
     await newBook.save();
