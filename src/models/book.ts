@@ -13,6 +13,7 @@ export interface Book extends Document, Dates {
   editorial: String;
   rate: Number;
   category: Category[];
+  writer: String;
 }
 
 const bookSchema = new Schema(
@@ -29,6 +30,7 @@ const bookSchema = new Schema(
     location: { latitude: { type: Number }, longitude: { type: Number } },
     rate: { type: Number },
     editorial: { type: String },
+    writer: {type: String},
   },
   { timestamps: true }
 );
