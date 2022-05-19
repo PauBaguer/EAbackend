@@ -124,8 +124,8 @@ async function deleteClub(req: Request, res: Response) {
 }
 
 async function subscribeUserClub(req: Request, res: Response) {
-  const { idUser, idClub } = req.body;
   try {
+    const { idUser, idClub } = req.body;
     const club = await ClubModel.findById(idClub);
     const user = await UserModel.findById(idUser);
     if (!club || !user) {
