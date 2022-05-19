@@ -4,7 +4,7 @@ import { Category, CategoryModel } from "../models/category.js";
 
 async function getBooks(req: Request, res: Response): Promise<void> {
   try {
-    const allBooks = await BookModel.find();
+    const allBooks = await BookModel.find().populate("category");
     if (allBooks.length == 0) {
       res.status(404).send({ message: "There are no books yet!" });
     } else {
@@ -17,7 +17,7 @@ async function getBooks(req: Request, res: Response): Promise<void> {
 
 async function getBook(req: Request, res: Response): Promise<void> {
   try {
-    const bookFound = await BookModel.findOne({ _id: req.params.id }, req.body);
+    const bookFound = await BookModel.findOne({ _id: req.params.id }, req.body).populate("category");
     if (bookFound == null) {
       res.status(404).send({ message: "The book doesn't exist!" });
     } else {

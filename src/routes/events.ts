@@ -24,8 +24,8 @@ async function getEventById(req: Request, res: Response): Promise<void> {
     const eventFound = await EventModel.findOne({
       _id: req.params.eventId,
     }).populate("usersList", "name userName age mail")
-    .populate("admin", "name userName age mail")
-    .populate("category");
+      .populate("admin", "name userName age mail")
+      .populate("category");
     if (eventFound == null) {
       res.status(404).send({ message: "The event doesn't exist!" });
     } else {
@@ -81,96 +81,87 @@ async function createEvent(req: Request, res: Response): Promise<void> {
   }
 }
 
-async function joinEvent(req: Request, res: Response): Promise<void> {
+async function joinEvent(req: Request, res: Response) {
   try {
     const { userId, eventId } = req.params;
-    console.log("User: " + userId);
-    console.log("Event: " + eventId);
-    const user: User | null = await UserModel.findOne({
-      _id: userId,
-      disabled: false,
-    });
-    if (user == null || user._id != userId) {
-      res.status(404).send({ message: "Error. User not found." });
-      return;
+    const event = await EventModel.findById(eventId);
+    const user = await UserModel.findById(userId);
+    if (!event || !user) {
+      return res
+        .status(404)
+        .send({ message: `Event ${eventId} or user ${userId} not found` });
     }
-    const event: Event | null = await EventModel.findOne({ _id: eventId });
-    if (event == null) {
-      res.status(404).send({ message: "Error. Event not found." });
-      return;
-    }
-    UserModel.findOneAndUpdate(
-      { _id: userId, disabled: false },
-      { $push: { events: event } },
-      function (error, success) {
-        if (error) {
-          res
-            .status(500)
-            .send({ message: `Server error adding event to user: ${error}` });
-          return;
+
+    await EventModel.findOneAndUpdate(
+      { _id: event.id },
+      { $addToSet: { usersList: user } }
+    )
+      .then((resEvent) => {
+        if (!resEvent) {
+          return res.status(404).send({ message: "Error add user to event." });
         }
-      }
-    );
-    EventModel.findOneAndUpdate(
-      { _id: eventId },
-      { $push: { usersList: user } },
-      function (error, success) {
-        if (error) {
-          res.status(500).send({ message: "Error adding the user to event." });
-          return;
+      })
+      .catch((error) => {
+        return res
+          .status(400)
+          .send({ message: `Error join to event ${error}` });
+      });
+
+    await UserModel.findOneAndUpdate(
+      { _id: user.id },
+      { $addToSet: { events: event } }
+    )
+      .then((resUser) => {
+        if (!resUser) {
+          return res.status(404).send({ message: "Error add user to event." });
         }
-      }
-    );
-    res
-      .status(200)
-      .send({ message: "Event added successfully to " + user.userName });
+        res.status(200).send({
+          message: `User ${user.name} has joined to ${event.name}`,
+        });
+      })
+      .catch((error) => {
+        res.status(400).send({ message: `Error join to event ${error}` });
+      });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
 }
 
-async function leaveEvent(req: Request, res: Response): Promise<void> {
+async function leaveEvent(req: Request, res: Response) {
   try {
     const { userId, eventId } = req.params;
-    const user = await UserModel.findOne({ _id: userId, disabled: false });
-    if (user == null || user._id != userId) {
-      res.status(404).send({ message: "Error. User not found." });
-      return;
-    }
-    const event = await EventModel.findOne({ _id: eventId });
-    if (event == null) {
-      res.status(404).send({ message: "Error. Event not found." });
-      return;
-    }
-    UserModel.findOneAndUpdate(
-      { _id: userId, disabled: false },
-      { $pull: { events: event._id } },
-      function (error, success) {
-        if (error) {
-          res
-            .status(500)
-            .send({ message: `Error deleting the event to user: ${error}` });
-          return;
-        }
-      }
-    );
-    EventModel.findOneAndUpdate(
+    await EventModel.findOneAndUpdate(
       { _id: eventId },
-      { $pull: { usersList: user._id } },
-      function (error, success) {
-        if (error) {
-          console.log(error);
-          res
-            .status(500)
-            .send({ message: "Error deleting the user to event." });
-          return;
-        } else {
-          res.status(200).send({
-            message: "Event deleted successfully to " + user.userName,
-          });
+      { $pull: { usersList: userId } },
+      { safe: true }
+    )
+      .then((event) => {
+        if (!event) {
+          return res.status(404).send({ message: "Event not found" });
         }
-      }
-    );
+      })
+      .catch((error) => {
+        return res
+          .status(400)
+          .send({ message: `Error leave to event ${error}` });
+      });
+
+    await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { events: eventId } },
+      { safe: true }
+    )
+      .then((user) => {
+        if (!user) {
+          return res.status(404).send({ message: "User not found" });
+        }
+        res
+          .status(200)
+          .send({ message: `User ${user.name} leave event ${eventId}` });
+      })
+      .catch((error) => {
+        res.status(400).send({ message: `Error leave to event ${error}` });
+      });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
