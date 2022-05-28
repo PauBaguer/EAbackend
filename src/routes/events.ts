@@ -38,7 +38,6 @@ async function getEventById(req: Request, res: Response): Promise<void> {
 
 async function createEvent(req: Request, res: Response): Promise<void> {
   try {
-    console.log(req.body);
     const { name, description, location, category, eventDate, usersList } =
       req.body;
     const { userId } = req.params;
@@ -59,13 +58,13 @@ async function createEvent(req: Request, res: Response): Promise<void> {
       location: location,
       admin: admin,
       category: categories,
-      usersList: usersList,
+      usersList: admin,
       eventDate: eventDate,
     });
     await newEvent.save();
     UserModel.findOneAndUpdate(
       { _id: userId, disabled: false },
-      { $push: { events: newEvent } },
+      { $addToSet: { events: newEvent } },
       function (error, success) {
         if (error) {
           res.status(500).send({ message: `Server error: ${error}` });
@@ -198,7 +197,7 @@ async function deleteEvent(req: Request, res: Response): Promise<void> {
     if (eventToDelete == null) {
       res.status(404).send({ message: "The event doesn't exist!" });
     } else {
-      UserModel.findOneAndUpdate(
+      UserModel.updateMany(
         { _id: eventToDelete.usersList, disabled: false },
         { $pull: { events: eventToDelete._id } },
         { safe: true },

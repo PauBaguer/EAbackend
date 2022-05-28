@@ -17,7 +17,7 @@ async function getBooks(req: Request, res: Response): Promise<void> {
 
 async function getBook(req: Request, res: Response): Promise<void> {
   try {
-    const bookFound = await BookModel.findOne({ _id: req.params.id }, req.body).populate("category");
+    const bookFound = await BookModel.findOne({ _id: req.params.id, }).populate("category");
     if (bookFound == null) {
       res.status(404).send({ message: "The book doesn't exist!" });
     } else {
@@ -31,7 +31,7 @@ async function getBook(req: Request, res: Response): Promise<void> {
 //get book by categories POR ID
 async function getBookByCategory(req: Request, res: Response): Promise<void> {
   try {
-    const bookFound = await BookModel.find({ categories: req.params.categories });
+    const bookFound = await BookModel.find({ categories: req.params.categories }).populate("category");
     if (bookFound == null || bookFound.length == 0) {
       res.status(404).send({ message: "There are no books with this category!" });
     } else {
@@ -62,7 +62,7 @@ async function getBookByReleaseDate(
   try {
     const bookFound = await BookModel.find({
       releaseDate: req.params.releaseDate,
-    });
+    }).populate("category");
     if (bookFound == null) {
       res.status(404).send({ message: "The book doesn't exist!" });
     } else {
@@ -84,6 +84,7 @@ async function addBook(req: Request, res: Response): Promise<void> {
       description,
       rate,
       editorial,
+      writer,
     } = req.body;
     const categories: Category[] | null = await CategoryModel.find({
       name: category.split(","),
@@ -97,6 +98,7 @@ async function addBook(req: Request, res: Response): Promise<void> {
       description: description,
       rate: rate,
       editorial: editorial,
+      writer: writer,
 
     });
     await newBook.save();
