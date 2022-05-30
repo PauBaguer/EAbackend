@@ -52,7 +52,37 @@ const io = new Server(serv, {
     methods: ["GET", "POST"],
   },
 });
+
+let openChats: String[] = [];
+
 console.log("open socket");
-io.on("connection", (socket: Socket) =>
-  console.log(`Client connected: ${socket.id}`)
-);
+io.on("connection", (socket: Socket) => {
+  console.log(`Client connected: ${socket.id}`);
+  socket.on("test", (msg) => {
+    console.log("message: " + msg);
+    socket.emit("test", msg);
+    console.log("emmited");
+  });
+
+  socket.on("new-chat", (msg) => {
+    console.log("client joined new chat: " + msg);
+    socket.join(msg);
+
+    socket.on(msg, (chatText) => {
+      console.log("received message: " + chatText);
+      io.to(msg).emit("textMessage", chatText);
+    });
+  });
+
+  // socket.on("new-chat", (msg) => {
+  //   console.log("new-chat with id " + msg);
+  //   //  if (!openChats.includes(msg)) {
+  //   console.log("opened a new chat");
+  //   openChats.push(msg);
+  //   socket.on(msg, (chatText) => {
+  //     console.log(`Send ${chatText} on ${msg}`);
+  //     socket.emit(msg, chatText);
+  //   });
+  //   // }
+  // });
+});
