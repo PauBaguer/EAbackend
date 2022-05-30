@@ -11,6 +11,7 @@ import managementRouter from "./routes/management.js";
 import { VerifyToken, VeryfyAdminToken } from "./middlewares/verifyToken.js";
 import logger from "morgan";
 import cors from "cors";
+import socket, { Server, Socket } from "socket.io";
 
 //load envs
 dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
@@ -44,4 +45,14 @@ db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
 db.once("open", () => console.log("MONGODB CONNECTION OPEN"));
 await mongoose.connect(DB_URL);
 
-app.listen(PORT, () => console.log(`listening on ${PORT}`)); //
+const serv = app.listen(PORT, () => console.log(`listening on ${PORT}`)); //
+const io = new Server(serv, {
+  cors: {
+    origin: ["http://localhost:4000"],
+    methods: ["GET", "POST"],
+  },
+});
+console.log("open socket");
+io.on("connection", (socket: Socket) =>
+  console.log(`Client connected: ${socket.id}`)
+);

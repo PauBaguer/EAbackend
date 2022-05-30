@@ -45,7 +45,6 @@ async function getEventById(req: Request, res: Response): Promise<void> {
 
 async function createEvent(req: Request, res: Response): Promise<void> {
   try {
-    console.log(req.body);
     const { name, description, location, category, eventDate, usersList } =
       req.body;
     const { userId } = req.params;
