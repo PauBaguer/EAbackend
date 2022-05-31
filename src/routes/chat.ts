@@ -56,8 +56,6 @@ async function newChat(req: Request<{}, {}, NewChatBody>, res: Response) {
       { $push: { chats: chat._id } }
     );
 
-    console.log(result);
-
     res.status(201).send({ message: `Chat '${name}' created!` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
