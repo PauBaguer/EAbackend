@@ -6,6 +6,7 @@ import userRouter from "./routes/users.js";
 import bookRouter from "./routes/books.js";
 import chatRouter from "./routes/chat.js";
 import eventRouter from "./routes/events.js";
+import authorRouter from "./routes/author.js";
 import authRouter from "./routes/auth.js";
 import managementRouter from "./routes/management.js";
 import { VerifyToken, VeryfyAdminToken } from "./middlewares/verifyToken.js";
@@ -37,6 +38,7 @@ app.use("/user", VerifyToken, userRouter);
 app.use("/book", VerifyToken, bookRouter);
 app.use("/chat", VerifyToken, chatRouter);
 app.use("/event", VerifyToken, eventRouter);
+app.use("/author", VerifyToken, authorRouter);
 app.use("/auth", authRouter);
 app.use("/management", VerifyToken, managementRouter);
 
