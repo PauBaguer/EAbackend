@@ -35,10 +35,10 @@ app.use(express.json());
 app.use(cors());
 app.use("/club", VerifyToken, clubRouter);
 app.use("/user", VerifyToken, userRouter);
-app.use("/book", bookRouter);
+app.use("/book", VerifyToken, bookRouter);
 app.use("/chat", VerifyToken, chatRouter);
 app.use("/event", VerifyToken, eventRouter);
-app.use("/author", authorRouter);
+app.use("/author", VerifyToken, authorRouter);
 app.use("/auth", authRouter);
 app.use("/management", VerifyToken, managementRouter);
 
