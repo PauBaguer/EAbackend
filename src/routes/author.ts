@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 import { AuthorModel, Author } from "../models/author.js";
 import { Category, CategoryModel } from "../models/category.js";
-import * as Role from "../models/role.js";
-import { UserModel } from "../models/user.js";
+import { User, UserModel } from "../models/user.js";
+import { BookModel, Book } from '../models/book.js';
 
 async function getAll(req: Request, res: Response) {
     try {
@@ -70,30 +70,24 @@ async function getByUser(userId: string, res: Response) {
 
 async function postAuthor(req: Request, res: Response) {
     try {
-        const { name, birthDate, deathDate, biography, books, category, photoURL, userId } = req.body;
+        const { name, birthDate, deathDate, biography, category, photoURL, userId } = req.body;
         if (await AuthorModel.findOne({ name: name })) {
             res
                 .status(406)
                 .send({ message: "There is already a author with the same name." });
             return;
         }
-        if (await AuthorModel.findOne({ name: name })) {
-            res
-                .status(406)
-                .send({ message: "There is already a author with the same name." });
-            return;
-        }
-        const user = await UserModel.findById(userId);
+        const user: User | null = await UserModel.findById(userId).then((user) => { if (!user) return null; return user });
         const categories: Category[] | null = await CategoryModel.find({
             name: category.split(","),
         });
+
 
         const newAuthor = new AuthorModel({
             name: name,
             birthDate: birthDate,
             deathDate: deathDate,
             biography: biography,
-            books: books,
             categories: categories,
             photoURL: photoURL,
             user: user,
@@ -106,13 +100,16 @@ async function postAuthor(req: Request, res: Response) {
     }
 }
 
-async function updateUser(req: Request, res: Response) {
+async function updateAuthor(req: Request, res: Response) {
     try {
         const { id } = req.params;
         const { name, birthDate, deathDate, biography, category, photoURL } = req.body;
+        const categories: Category[] | null = await CategoryModel.find({
+            name: category.split(","),
+        });
         const result = await AuthorModel.updateOne(
             { _id: id },
-            { name: name, deathDate: deathDate, biography: biography, birthDate: birthDate, category: category, photoURL: photoURL }
+            { name: name, deathDate: deathDate, biography: biography, birthDate: birthDate, categories: categories, photoURL: photoURL }
         );
 
         if (!result.modifiedCount) {
@@ -124,21 +121,99 @@ async function updateUser(req: Request, res: Response) {
         res.status(500).send({ message: `Server error: ${e}` });
     }
 }
-//TODO CHANGE
+
+async function addBook(req: Request, res: Response) {
+    try {
+        const { authorId, bookId } = req.body;
+        const author = await AuthorModel.findById(authorId);
+        const book = await BookModel.findById(bookId);
+        if (!author || !book) {
+            return res
+                .status(404)
+                .send({ message: `Author ${authorId} or book ${bookId} not found` });
+        }
+
+        await AuthorModel.findOneAndUpdate(
+            { _id: author.id },
+            { $addToSet: { books: book } }
+        )
+            .then((resAuthor) => {
+                if (!resAuthor) {
+                    return res.status(404).send({ message: "Error add book to author." });
+                }
+                BookModel.updateMany({ _id: author.books },
+                    { $set: { writer: resAuthor } })
+                    .then((resBook) => {
+                        if (!resBook) {
+                            return res.status(404).send({ message: "Error add book to author." });
+                        }
+                        return res.status(200).send({
+                            message: `Book ${book.title} added ${author.name}`,
+                        });
+                    })
+            })
+            .catch((error) => {
+                return res
+                    .status(400)
+                    .send({ message: `Error add book ${error}` });
+            });
+    } catch (e) {
+        res.status(500).send({ message: `Server error: ${e}` });
+    }
+}
+
+async function delBook(req: Request, res: Response) {
+    try {
+        const { authorId, bookId } = req.body;
+        const author = await AuthorModel.findById(authorId);
+        const book = await BookModel.findById(bookId);
+        if (!author || !book) {
+            return res
+                .status(404)
+                .send({ message: `Author ${authorId} or book ${bookId} not found` });
+        }
+
+        await AuthorModel.findOneAndUpdate(
+            { _id: author.id },
+            { $pull: { books: book } },
+            { safe: true }
+        )
+            .then((resAuthor) => {
+                if (!resAuthor) {
+                    return res.status(404).send({ message: "Error add book to author." });
+                }
+                const anonymous = AuthorModel.find({ name: "anonymous" })
+                BookModel.updateMany({ _id: author.books },
+                    { $set: { writer: anonymous } },
+                    { safe: true })
+                return res.status(200).send({ message: `Book deleted!` });
+            })
+            .catch((error) => {
+                return res
+                    .status(400)
+                    .send({ message: `Error add book ${error}` });
+            });
+    } catch (e) {
+        res.status(500).send({ message: `Server error: ${e}` });
+    }
+}
+
 async function deleteById(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        const delResult = await AuthorModel.updateOne(
-            { _id: id, disabled: false },
-            { disabled: true }
-        );
-
-        if (!delResult.modifiedCount) {
-            res.status(404).send({ message: `Author with id ${id} not found` });
-            return;
-        }
-
-        res.status(200).send({ message: `User ${id} deleted!` });
+        await AuthorModel.findByIdAndDelete(id)
+            .then((author) => {
+                if (author) {
+                    const anonymous = AuthorModel.find({ name: "anonymous" })
+                    BookModel.updateMany({ _id: author.books },
+                        { $set: { writer: anonymous } },
+                        { safe: true })
+                    return res.status(200).send({ message: `Author ${id} deleted!` });
+                }
+                res.status(404).send({ message: `Author with id ${id} not found` });
+            }).catch((error) => {
+                res.status(400).send({ message: `Error delete Author ${error}` });
+            });
     } catch (e) {
         res.status(500).send({ message: `Server error: ${e}` });
     }
@@ -149,7 +224,9 @@ let router = express.Router();
 router.get("/", getAll);
 router.get("/:id", getById);
 router.post("/", postAuthor);
-router.put("/update/:id", updateUser);
+router.put("/:id", updateAuthor);
+router.put("/", addBook);
+router.put("/delBook", delBook);
 router.delete("/:id", deleteById);
 
 export default router;
