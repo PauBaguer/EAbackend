@@ -9,6 +9,7 @@ import eventRouter from "./routes/events.js";
 import authorRouter from "./routes/author.js";
 import authRouter from "./routes/auth.js";
 import managementRouter from "./routes/management.js";
+import commentRouter from "./routes/comment.js";
 import { VerifyToken, VeryfyAdminToken } from "./middlewares/verifyToken.js";
 import logger from "morgan";
 import cors from "cors";
@@ -41,6 +42,7 @@ app.use("/event", VerifyToken, eventRouter);
 app.use("/author", VerifyToken, authorRouter);
 app.use("/auth", authRouter);
 app.use("/management", VerifyToken, managementRouter);
+app.use("/comment", VerifyToken, commentRouter);
 
 let db = mongoose.connection;
 db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
