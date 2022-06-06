@@ -135,8 +135,8 @@ async function deleteBook(req: Request, res: Response): Promise<void> {
       res.status(404).send({ message: "The book doesn't exist!" });
     } else {
       await AuthorModel.findOneAndUpdate(
-        { _id: bookToDelete.writer.id },
-        { $pull: { books: bookToDelete } },
+        { _id: bookToDelete.writer },
+        { $pull: { books: bookToDelete._id } },
         { safe: true }
       )
       res.status(200).send({ message: "Deleted!" });
