@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
+import { Author, AuthorModel } from "../models/author.js";
 import { Book, BookModel } from "../models/book.js";
 import { Category, CategoryModel } from "../models/category.js";
 
 async function getBooks(req: Request, res: Response): Promise<void> {
   try {
-    const allBooks = await BookModel.find().populate("category");
+    const allBooks = await BookModel.find().populate("category").populate("writer", "name");
     if (allBooks.length == 0) {
       res.status(404).send({ message: "There are no books yet!" });
     } else {
@@ -17,7 +18,7 @@ async function getBooks(req: Request, res: Response): Promise<void> {
 
 async function getBook(req: Request, res: Response): Promise<void> {
   try {
-    const bookFound = await BookModel.findOne({ _id: req.params.id, }).populate("category");
+    const bookFound = await BookModel.findOne({ _id: req.params.id, }).populate("category").populate("writer", "name");
     if (bookFound == null) {
       res.status(404).send({ message: "The book doesn't exist!" });
     } else {
@@ -89,6 +90,7 @@ async function addBook(req: Request, res: Response): Promise<void> {
     const categories: Category[] | null = await CategoryModel.find({
       name: category.split(","),
     });
+    const author: Author | null = await AuthorModel.findById(writer);
     const newBook = new BookModel({
       title: title,
       category: categories,
@@ -98,8 +100,7 @@ async function addBook(req: Request, res: Response): Promise<void> {
       description: description,
       rate: rate,
       editorial: editorial,
-      writer: writer,
-
+      writer: author,
     });
     await newBook.save();
     res.status(200).send({ message: "Book added!" });
@@ -133,6 +134,11 @@ async function deleteBook(req: Request, res: Response): Promise<void> {
     if (bookToDelete == null) {
       res.status(404).send({ message: "The book doesn't exist!" });
     } else {
+      await AuthorModel.findOneAndUpdate(
+        { _id: bookToDelete.writer.id },
+        { $pull: { books: bookToDelete } },
+        { safe: true }
+      )
       res.status(200).send({ message: "Deleted!" });
     }
   } catch (e) {

@@ -28,8 +28,6 @@ export const VerifyToken = async (
       return;
     }
 
-    console.log(decoded!);
-
     const user = await UserModel.findOne({ _id: decoded!.id, disabled: false });
     if (!user) {
       res.status(403).send({ message: "User not authorized" });
@@ -66,8 +64,6 @@ export const VeryfyAdminToken = async (
       res.status(403).send({ message: "User not authorized" });
       return;
     }
-
-    console.log(decoded!);
 
     const user = await UserModel.findOne({ _id: decoded!.id, disabled: false });
     if (!user) {
@@ -111,8 +107,6 @@ export const VerifyWriterToken = async (
       res.status(403).send({ message: "User not authorized" });
       return;
     }
-
-    console.log(decoded!);
 
     const user = await UserModel.findOne({ _id: decoded!.id, disabled: false });
     if (!user) {

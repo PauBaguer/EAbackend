@@ -6,12 +6,14 @@ import userRouter from "./routes/users.js";
 import bookRouter from "./routes/books.js";
 import chatRouter from "./routes/chat.js";
 import eventRouter from "./routes/events.js";
+import authorRouter from "./routes/author.js";
 import authRouter from "./routes/auth.js";
 import managementRouter from "./routes/management.js";
 import commentRouter from "./routes/comment.js";
 import { VerifyToken, VeryfyAdminToken } from "./middlewares/verifyToken.js";
 import logger from "morgan";
 import cors from "cors";
+import socket, { Server, Socket } from "socket.io";
 
 //load envs
 dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
@@ -37,6 +39,7 @@ app.use("/user", VerifyToken, userRouter);
 app.use("/book", VerifyToken, bookRouter);
 app.use("/chat", VerifyToken, chatRouter);
 app.use("/event", VerifyToken, eventRouter);
+app.use("/author", VerifyToken, authorRouter);
 app.use("/auth", authRouter);
 app.use("/management", VerifyToken, managementRouter);
 app.use("/comment", VerifyToken, commentRouter);
@@ -46,4 +49,44 @@ db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
 db.once("open", () => console.log("MONGODB CONNECTION OPEN"));
 await mongoose.connect(DB_URL);
 
-app.listen(PORT, () => console.log(`listening on ${PORT}`)); //
+const serv = app.listen(PORT, () => console.log(`listening on ${PORT}`)); //
+const io = new Server(serv, {
+  cors: {
+    origin: ["http://localhost:4000"],
+    methods: ["GET", "POST"],
+  },
+});
+
+let openChats: String[] = [];
+
+console.log("open socket");
+io.on("connection", (socket: Socket) => {
+  console.log(`Client connected: ${socket.id}`);
+  socket.on("test", (msg) => {
+    console.log("message: " + msg);
+    socket.emit("test", msg);
+    console.log("emmited");
+  });
+
+  socket.on("new-chat", (msg) => {
+    console.log("client joined new chat: " + msg);
+    socket.join(msg);
+
+    socket.on(msg, (chatText) => {
+      console.log("received message: " + chatText);
+      io.to(msg).emit("textMessage", chatText);
+    });
+  });
+
+  // socket.on("new-chat", (msg) => {
+  //   console.log("new-chat with id " + msg);
+  //   //  if (!openChats.includes(msg)) {
+  //   console.log("opened a new chat");
+  //   openChats.push(msg);
+  //   socket.on(msg, (chatText) => {
+  //     console.log(`Send ${chatText} on ${msg}`);
+  //     socket.emit(msg, chatText);
+  //   });
+  //   // }
+  // });
+});

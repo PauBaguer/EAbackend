@@ -21,7 +21,6 @@ async function singup(req: Request, res: Response) {
     const categories: Category[] | null = await CategoryModel.find({
       name: category,
     });
-    console.log(categories);
 
     const newUser = new UserModel({
       name: name,
@@ -44,7 +43,6 @@ async function singup(req: Request, res: Response) {
         expiresIn: 86400, //24 hours
       }
     );
-    console.log(savedUser);
 
     res.status(201).send({ message: `User singed up`, token });
     return;
@@ -107,8 +105,6 @@ async function verifyToken(req: Request, res: Response) {
       res.status(403).send({ message: "Invalid token" });
       return;
     }
-
-    console.log(decoded!);
 
     const user = await UserModel.findOne({ _id: decoded!.id, disabled: false });
     if (!user) {

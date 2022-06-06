@@ -6,14 +6,8 @@ import { User, UserModel } from "../models/user.js";
 async function getEvents(req: Request, res: Response): Promise<void> {
   try {
     const allEvents = await EventModel.find()
-      .populate(
-        "usersList",
-        "name userName birthDate mail location books events clubs chats categories photoURL role"
-      )
-      .populate(
-        "admin",
-        "name userName birthDate mail location books events clubs chats categories photoURL role"
-      )
+      .populate("usersList", "name userName age mail photoURL")
+      .populate("admin", "name userName age mail photoURL")
       .populate("category");
     if (allEvents.length == 0) {
       res.status(404).send({ message: "There are no events yet!" });
@@ -29,9 +23,8 @@ async function getEventById(req: Request, res: Response): Promise<void> {
   try {
     const eventFound = await EventModel.findOne({
       _id: req.params.eventId,
-    })
-      .populate("usersList", "name userName age mail")
-      .populate("admin", "name userName age mail")
+    }).populate("usersList", "name userName age mail photoURL")
+      .populate("admin", "name userName age mail photoURL")
       .populate("category");
     if (eventFound == null) {
       res.status(404).send({ message: "The event doesn't exist!" });
@@ -45,7 +38,6 @@ async function getEventById(req: Request, res: Response): Promise<void> {
 
 async function createEvent(req: Request, res: Response): Promise<void> {
   try {
-    console.log(req.body);
     const { name, description, location, category, eventDate, usersList } =
       req.body;
     const { userId } = req.params;
@@ -66,13 +58,13 @@ async function createEvent(req: Request, res: Response): Promise<void> {
       location: location,
       admin: admin,
       category: categories,
-      usersList: usersList,
+      usersList: admin,
       eventDate: eventDate,
     });
     await newEvent.save();
     UserModel.findOneAndUpdate(
       { _id: userId, disabled: false },
-      { $push: { events: newEvent } },
+      { $addToSet: { events: newEvent } },
       function (error, success) {
         if (error) {
           res.status(500).send({ message: `Server error: ${error}` });
@@ -205,7 +197,7 @@ async function deleteEvent(req: Request, res: Response): Promise<void> {
     if (eventToDelete == null) {
       res.status(404).send({ message: "The event doesn't exist!" });
     } else {
-      UserModel.findOneAndUpdate(
+      UserModel.updateMany(
         { _id: eventToDelete.usersList, disabled: false },
         { $pull: { events: eventToDelete._id } },
         { safe: true },

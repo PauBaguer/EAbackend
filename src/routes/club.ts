@@ -6,7 +6,7 @@ import { UserModel } from "../models/user.js";
 async function getClubs(req: Request, res: Response) {
   try {
     await ClubModel.find()
-      .populate("admin", "userName mail")
+      .populate("admin", "name userName age mail photoURL")
       .populate("category")
       .sort("-createdAt")
       .then(async (clubs) => {
@@ -24,8 +24,8 @@ async function getClub(req: Request, res: Response) {
   try {
     const { idClub } = req.params;
     await ClubModel.findById(idClub)
-      .populate("admin", "userName mail")
-      .populate("usersList", "userName mail")
+      .populate("usersList", "name userName age mail photoURL")
+      .populate("admin", "name userName age mail photoURL")
       .populate("category")
       .then((club) => {
         if (club) {

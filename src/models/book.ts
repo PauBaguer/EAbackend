@@ -1,4 +1,5 @@
 import mongoose, { Document } from "mongoose";
+import { Author } from "./author";
 import { Category } from "./category";
 import Dates from "./dates";
 const Schema = mongoose.Schema;
@@ -13,7 +14,7 @@ export interface Book extends Document, Dates {
   editorial: String;
   rate: Number;
   category: Category[];
-  writer: String;
+  writer: Author;
 }
 
 const bookSchema = new Schema(
@@ -30,7 +31,7 @@ const bookSchema = new Schema(
     location: { latitude: { type: Number }, longitude: { type: Number } },
     rate: { type: Number },
     editorial: { type: String },
-    writer: {type: String},
+    writer: { type: Schema.Types.ObjectId, required: true, ref: "Author" },
   },
   { timestamps: true }
 );
