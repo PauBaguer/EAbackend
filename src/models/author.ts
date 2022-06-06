@@ -27,7 +27,7 @@ const authorSchema = new Schema<Author>(
         books: [{ type: Schema.Types.ObjectId, ref: "Book" }],
         categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
         photoURL: { type: String, default: "" },
-        user: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        user: { type: Schema.Types.ObjectId, ref: "User" },
     },
     { timestamps: true }
 );
