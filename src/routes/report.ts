@@ -15,6 +15,19 @@ async function getReports(req: Request, res: Response): Promise<void> {
   }
 }
 
+async function getReportByUser(req: Request, res: Response): Promise<void> {
+    try {
+      const reportsFound = await ReportModel.find({ user: req.params.user}).populate("user");
+      if (reportsFound.length == 0) {
+        res.status(404).send({ message: "There are no reports yet!" });
+      } else {
+        res.status(200).send(reportsFound);
+      }
+    } catch (e) {
+      res.status(500).send({ message: `Server error: ${e}` });
+    }
+  }
+
 async function getReport(req: Request, res: Response): Promise<void> {
   try {
     const reportFound = await ReportModel.findOne({ _id: req.params.id, }).populate("user");
@@ -85,6 +98,7 @@ async function deleteReport(req: Request, res: Response): Promise<void> {
 let router = express.Router();
 
 router.get("/", getReports);
+router.get("/user/:user", getReportByUser);
 router.get("/:id", getReport);
 router.post("/", addReport);
 router.put("/:id", updateReport);
