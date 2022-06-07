@@ -9,13 +9,15 @@ export interface Report extends Document, Dates {
   user: User;
   title: String;
   text: String;
+  type: String;
 }
 
 const ReportSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    title: { type: String },
+    title: { type: String, required: true },
     text: { type: String, required: true},
+    type: { type: String},
   },
   { timestamps: true }
 );

@@ -28,6 +28,19 @@ async function getReportByUser(req: Request, res: Response): Promise<void> {
     }
   }
 
+  async function getReportByType(req: Request, res: Response): Promise<void> {
+    try {
+      const reportsFound = await ReportModel.find({ type: req.params.type}).populate("user");
+      if (reportsFound.length == 0) {
+        res.status(404).send({ message: "There are no reports yet!" });
+      } else {
+        res.status(200).send(reportsFound);
+      }
+    } catch (e) {
+      res.status(500).send({ message: `Server error: ${e}` });
+    }
+  }
+
 async function getReport(req: Request, res: Response): Promise<void> {
   try {
     const reportFound = await ReportModel.findOne({ _id: req.params.id, }).populate("user");
@@ -47,6 +60,7 @@ async function addReport(req: Request, res: Response): Promise<void> {
       user,
       title,
       text,
+      type,
     } = req.body;
     
     const userC = await UserModel.findById(user);
@@ -54,7 +68,8 @@ async function addReport(req: Request, res: Response): Promise<void> {
     const NewReport = new ReportModel({
       user: userC,
       title: title,
-      text: text
+      text: text,
+      type: type
     });
     await NewReport.save();
     res.status(200).send({ message: "Report added!" });
@@ -99,6 +114,7 @@ let router = express.Router();
 
 router.get("/", getReports);
 router.get("/user/:user", getReportByUser);
+router.get("/type/:type", getReportByType);
 router.get("/:id", getReport);
 router.post("/", addReport);
 router.put("/:id", updateReport);
