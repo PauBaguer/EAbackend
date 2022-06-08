@@ -1,11 +1,21 @@
 import express, { Request, Response } from "express";
-import { Schema } from "mongoose";
-import { VideoconferenceModel, Videoconference } from "../models/videoconference";
-import { UserModel, User } from "../models/user.js";
+import pkg from 'agora-access-token'; const { RtcTokenBuilder, RtcRole } = pkg;
+import * as dotenv from "dotenv";
+
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
+const appID = process.env.APP_ID || "";
+const appCertificate = process.env.APP_CERTIFICATE || "";
+const role = RtcRole.PUBLISHER;
+const expirationTimeInSeconds = 3600
+
+const currentTimestamp = Math.floor(Date.now() / 1000)
+
+const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds
 
 async function getToken(req: Request, res: Response) {
     const { channelName } = req.params;
-    res.status(200).send({ rtcToken: "00618672b0a455f4f21b03710e91fbb417fIACy39vgbFQwU+q48YZKEnWePhopQ3ofbhqhn3z9plCTZVygsJIAAAAAEACKRNzQmImgYgEAAQCYiaBi" });
+    const tokenA = RtcTokenBuilder.buildTokenWithUid(appID, appCertificate, channelName, 0, role, privilegeExpiredTs);
+    res.status(200).send({ rtcToken: tokenA });
 }
 
 let router = express.Router();
