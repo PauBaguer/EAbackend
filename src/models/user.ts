@@ -7,8 +7,6 @@ import Dates from "./dates.js";
 import { Category } from "./category.js";
 import * as Role from "./role.js";
 
-//import { Category } from "./category";
-//import { Payment } from "./payment";
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
@@ -27,6 +25,7 @@ export interface User extends Document, Dates {
   categories: Category[];
   photoURL: String;
   role: String[];
+  google: Boolean;
 }
 
 export interface UserToSend {
@@ -42,6 +41,7 @@ export interface UserToSend {
   categories: Category[];
   photoURL: String;
   role: String[];
+  google: Boolean;
 }
 
 const userSchema = new Schema<User>(
@@ -50,7 +50,7 @@ const userSchema = new Schema<User>(
     userName: { type: String, required: true, unique: true },
     birthDate: Date,
     mail: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: String,
     location: { type: { latidude: Number, longitude: Number } },
     books: [{ type: Schema.Types.ObjectId, ref: "Book" }],
     events: [{ type: Schema.Types.ObjectId, ref: "Event" }],
@@ -60,6 +60,7 @@ const userSchema = new Schema<User>(
     categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
     photoURL: { type: String, default: "" },
     role: { type: [String], default: ["READER"] },
+    google: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

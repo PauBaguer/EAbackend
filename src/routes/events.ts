@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express";
 import { Category, CategoryModel } from "../models/category.js";
-import { EventModel, Event } from "../models/event.js";
+import { EventModel } from "../models/event.js";
 import { User, UserModel } from "../models/user.js";
 
 async function getEvents(req: Request, res: Response): Promise<void> {
   try {
     const allEvents = await EventModel.find()
-      .populate("usersList", "name userName age mail photoURL")
-      .populate("admin", "name userName age mail photoURL")
+      .populate("usersList", "name userName age mail photoURL google")
+      .populate("admin", "name userName age mail photoURL google")
       .populate("category");
     if (allEvents.length == 0) {
       res.status(404).send({ message: "There are no events yet!" });
@@ -23,8 +23,9 @@ async function getEventById(req: Request, res: Response): Promise<void> {
   try {
     const eventFound = await EventModel.findOne({
       _id: req.params.eventId,
-    }).populate("usersList", "name userName age mail photoURL")
-      .populate("admin", "name userName age mail photoURL")
+    })
+      .populate("usersList", "name userName age mail photoURL google")
+      .populate("admin", "name userName age mail photoURL google")
       .populate("category");
     if (eventFound == null) {
       res.status(404).send({ message: "The event doesn't exist!" });
