@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { UserModel, User, UserToSend } from "../models/user.js";
 import * as Role from "../models/role.js";
+import bcrypt from "bcryptjs";
 
 async function getAll(req: Request, res: Response) {
   try {
@@ -241,6 +242,42 @@ async function deleteRoleFromUser(req: Request, res: Response) {
   }
 }
 
+async function changePassword(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { password, old } = req.body;
+    const user: User | null = await UserModel.findById(id);
+    if (!user) {
+      res
+        .status(404)
+        .send({ message: `Username password combination does not exist` });
+      return;
+    }
+    if (!(await bcrypt.compare(old as string, user.password as string))) {
+      console.log("wandering");
+      res
+
+        .status(404)
+        .send({ message: `Username password combination does not exist` });
+      return;
+    }
+    const salt = await bcrypt.genSalt(10);
+    const encryptedPassword = await bcrypt.hash(password, salt);
+    const result = await UserModel.updateOne(
+      { _id: id },
+      { password: encryptedPassword }
+    );
+
+    if (!result.modifiedCount) {
+      res.status(404).send({ message: `user with id ${id} nod found` });
+      return;
+    }
+    return res.status(200).send({ message: `success` });
+  } catch (e) {
+    res.status(500).send({ message: `Server error: ${e}` });
+  }
+}
+
 let router = express.Router();
 
 router.get("/", getAll);
@@ -248,6 +285,7 @@ router.get("/:id", getById);
 router.get("/getbyusername/:userName", getByUserName);
 router.get("/enable/:id", enableUser);
 router.post("/", postUser);
+router.post("/:id", changePassword);
 router.put("/update/:id", updateUser);
 router.put("/addrole/:id", addRoleToUser);
 router.put("/deleterole/:id", deleteRoleFromUser);
