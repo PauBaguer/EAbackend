@@ -32,7 +32,9 @@ interface NewChatBody {
 async function getById(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const chat = await ChatModel.findById(id).populate("users");
+    const chat = await ChatModel.findById(id)
+      .populate("users")
+      .populate({ path: "messages", populate: { path: "user" } });
 
     if (!chat)
       res.status(404).send({ message: `Chat with id ${id} not in DB` });

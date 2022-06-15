@@ -26,7 +26,7 @@ async function getById(req: Request, res: Response) {
     })
       //.select("-password")
       .populate([
-        "chats",
+        { path: "chats", populate: { path: "users" } },
         { path: "clubs", populate: { path: "category" } },
         "books",
         { path: "events", populate: { path: "category" } },
