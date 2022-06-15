@@ -10,6 +10,7 @@ import authorRouter from "./routes/author.js";
 import authRouter from "./routes/auth.js";
 import managementRouter from "./routes/management.js";
 import commentRouter from "./routes/comment.js";
+import reportRouter from "./routes/report.js";
 import videoconferenceRouter from "./routes/videoconference.js";
 import { VerifyToken, VeryfyAdminToken } from "./middlewares/verifyToken.js";
 import logger from "morgan";
@@ -47,6 +48,7 @@ app.use("/author", VerifyToken, authorRouter);
 app.use("/auth", authRouter);
 app.use("/management", VerifyToken, managementRouter);
 app.use("/comment", VerifyToken, commentRouter);
+app.use("/report", VerifyToken, reportRouter);
 app.use("/video", VerifyToken, videoconferenceRouter);
 
 let db = mongoose.connection;
