@@ -6,11 +6,22 @@ import { Category, CategoryModel } from "../models/category.js";
 
 async function singup(req: Request, res: Response) {
   try {
-    const { name, userName, mail, birthDate, password, role, category } =
-      req.body;
+    const {
+      name,
+      userName,
+      mail,
+      birthDate,
+      password,
+      role,
+      category,
+      google,
+    } = req.body;
 
-    const salt = await bcrypt.genSalt(10);
-    const encryptedPassword = await bcrypt.hash(password, salt);
+    let encryptedPassword;
+    if (google == false) {
+      const salt = await bcrypt.genSalt(10);
+      encryptedPassword = await bcrypt.hash(password, salt);
+    } else encryptedPassword = null;
 
     if (await UserModel.findOne({ userName: userName })) {
       res
@@ -30,6 +41,7 @@ async function singup(req: Request, res: Response) {
       password: encryptedPassword,
       categories: categories,
       role: role,
+      google: google,
     });
 
     const SECRET = process.env.JWT_SECRET;
@@ -63,14 +75,15 @@ async function singin(req: Request, res: Response) {
       return;
     }
 
-    // const salt = await bcrypt.genSalt(10);
-    // const encryptedPassword = await bcrypt.hash(password, salt);
-
-    if (!(await bcrypt.compare(password as string, user.password as string))) {
-      res
-        .status(404)
-        .send({ message: `Username password combination does not exist` });
-      return;
+    if (!user.google) {
+      if (
+        !(await bcrypt.compare(password as string, user.password as string))
+      ) {
+        res
+          .status(404)
+          .send({ message: `Username password combination does not exist` });
+        return;
+      }
     }
 
     const SECRET = process.env.JWT_SECRET;
