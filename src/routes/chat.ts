@@ -32,7 +32,9 @@ interface NewChatBody {
 async function getById(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const chat = await ChatModel.findById(id).populate("users");
+    const chat = await ChatModel.findById(id)
+      .populate("users")
+      .populate({ path: "messages", populate: { path: "user" } });
 
     if (!chat)
       res.status(404).send({ message: `Chat with id ${id} not in DB` });
@@ -113,9 +115,11 @@ async function joinChat(req: Request, res: Response) {
 
 async function leaveChat(req: Request, res: Response) {
   try {
-    const { chatId, username } = req.params;
+    const { chatId, userId } = req.params;
 
-    const chat: Chat | null = await ChatModel.findById(chatId);
+    console.log(chatId);
+
+    const chat: Chat | null = await ChatModel.findOne({ _id: chatId });
 
     if (!chat) {
       res.status(404).send({ message: `Chat with id ${chatId} not found` });
@@ -123,18 +127,18 @@ async function leaveChat(req: Request, res: Response) {
     }
 
     const user: User | null = await UserModel.findOne({
-      userName: username,
+      _id: userId,
       disabled: false,
     });
 
     if (!user) {
-      res.status(404).send({ message: `User ${username} not found` });
+      res.status(404).send({ message: `User ${userId} not found` });
       return;
     }
 
     const usrResult = await UserModel.updateOne(
-      { userName: username },
-      { $pop: { chats: chatId } }
+      { _id: userId },
+      { $pull: { chats: chatId } }
     );
 
     if (!usrResult.modifiedCount) {
@@ -142,12 +146,21 @@ async function leaveChat(req: Request, res: Response) {
       return;
     }
 
-    const chatResult = await chat.update({ $pop: { users: user._id } });
+    const chatResult = await ChatModel.updateOne(
+      {
+        _id: chatId,
+      },
+      {
+        $pull: { users: userId },
+      }
+    );
 
     if (!usrResult.modifiedCount) {
       res.status(500).send({ message: `User not modified` });
       return;
     }
+
+    res.status(200).send({ message: `removed Chat` });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
@@ -225,6 +238,6 @@ router.get("/:id", getById);
 router.get("/messages/:id", getLast10MessagesFrom);
 router.post("/", newChat);
 router.post("/join/:chatId/:userId", joinChat);
-router.delete("/leave/:chatId/:username", leaveChat);
+router.delete("/leave/:chatId/:userId", leaveChat);
 router.delete("/:id", deleteById);
 export default router;

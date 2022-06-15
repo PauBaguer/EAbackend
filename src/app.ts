@@ -15,6 +15,9 @@ import { VerifyToken, VeryfyAdminToken } from "./middlewares/verifyToken.js";
 import logger from "morgan";
 import cors from "cors";
 import socket, { Server, Socket } from "socket.io";
+import { ChatMessage, ChatMessageModel } from "./models/chatMessage.js";
+import { ChatModel } from "./models/chat.js";
+import { MessageChannel } from "worker_threads";
 
 //load envs
 dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
@@ -70,12 +73,31 @@ io.on("connection", (socket: Socket) => {
     console.log("emmited");
   });
 
+  socket.on("disconnect", async () => {
+    console.log("Socket client disconnected");
+  });
+
   socket.on("new-chat", (msg) => {
     console.log("client joined new chat: " + msg);
     socket.join(msg);
 
-    socket.on(msg, (chatText) => {
+    socket.on(msg, async (chatText: string) => {
+      const chatJs = JSON.parse(chatText);
       console.log("received message: " + chatText);
+      let chatMessage = new ChatMessageModel({
+        user: chatJs.user._id,
+        message: chatJs.message,
+      });
+      console.log("chatmsg");
+      const savedMsg = await chatMessage.save();
+      await ChatModel.updateOne(
+        { _id: msg },
+        {
+          $push: {
+            messages: savedMsg._id,
+          },
+        }
+      );
       io.to(msg).emit("textMessage", chatText);
     });
   });
