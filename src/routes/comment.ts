@@ -51,7 +51,6 @@ async function addComment(req: Request, res: Response): Promise<void> {
       type,
       users,
       likes,
-      dislikes,
     } = req.body;
     
     const userC = await UserModel.findById(user);
@@ -63,7 +62,6 @@ async function addComment(req: Request, res: Response): Promise<void> {
       type: type,
       users: users,
       likes: likes,
-      dislikes: dislikes,
     });
     await NewComment.save();
     res.status(200).send({ message: "Comment added!" });
