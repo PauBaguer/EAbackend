@@ -12,7 +12,6 @@ export interface Comment extends Document, Dates {
   type: String;
   users: String[];
   likes: Number;
-  dislikes: Number;
 }
 
 const commentSchema = new Schema(
@@ -23,7 +22,6 @@ const commentSchema = new Schema(
     type: { type: String, required: true},
     users: {  type: [String], default: [""] },
     likes: { type: Number },
-    dislikes: { type: Number },
   },
   { timestamps: true }
 );
