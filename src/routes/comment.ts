@@ -51,7 +51,6 @@ async function addComment(req: Request, res: Response): Promise<void> {
       type,
       users,
       likes,
-      dislikes,
     } = req.body;
     
     const userC = await UserModel.findById(user);
@@ -63,7 +62,6 @@ async function addComment(req: Request, res: Response): Promise<void> {
       type: type,
       users: users,
       likes: likes,
-      dislikes: dislikes,
     });
     await NewComment.save();
     res.status(200).send({ message: "Comment added!" });
@@ -72,19 +70,22 @@ async function addComment(req: Request, res: Response): Promise<void> {
   }
 }
 
-async function updateComment(req: Request, res: Response): Promise<void> {
+async function updateComment(req: Request, res: Response) {
   try {
-    const commentToUpdate = await CommentModel.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body
-    );
-    if (commentToUpdate == null) {
-      res.status(404).send({ message: "The comment doesn't exist!" });
-    } else {
-      res.status(200).send({ message: "Updated!" });
-    }
+      const { id } = req.params;
+      const { user, title, text, type, users, likes } = req.body;
+      const result = await CommentModel.updateOne(
+          { _id: id },
+          { user: user, title: title, text: text, type: type, users: users, likes: likes }
+      );
+
+      if (!result.modifiedCount) {
+          res.status(404).send({ message: `Comment ${id} not found in DB` });
+          return;
+      }
+      res.status(200).send({ message: `Comment ${id} updated` });
   } catch (e) {
-    res.status(500).send({ message: `Server error: ${e}` });
+      res.status(500).send({ message: `Server error: ${e}` });
   }
 }
 
