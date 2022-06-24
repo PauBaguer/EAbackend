@@ -67,7 +67,10 @@ async function singin(req: Request, res: Response) {
   try {
     const { userName, password } = req.body;
 
-    const user: User | null = await UserModel.findOne({ userName: userName });
+    const user: User | null = await UserModel.findOne({
+      userName: userName,
+      disabled: false,
+    });
     if (!user) {
       res
         .status(404)
