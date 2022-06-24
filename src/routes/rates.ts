@@ -4,7 +4,7 @@ import { Rate, RateModel } from "../models/rate.js";
 
 async function getRates(req: Request, res: Response): Promise<void> {
   try {
-    const allRates = await RateModel.find();
+    const allRates = await RateModel.find().populate("rating","userId","rate");
     if (allRates.length == 0) {
       res.status(404).send({ message: "There are no rates yet!" });
     } else {
@@ -17,7 +17,7 @@ async function getRates(req: Request, res: Response): Promise<void> {
 
 async function getBookRate(req: Request, res: Response): Promise<void> {
   try {
-    const rateFound = await RateModel.findOne({ bookId: req.params.bookId, });
+    const rateFound = await RateModel.findOne({ bookId: req.params.bookId, }).populate("rating","userId","rate");
     if (rateFound == null) {
       res.status(404).send({ message: "The rate doesn't exist!" });
     } else {

@@ -6,10 +6,7 @@ const model = mongoose.model;
 export interface Rate extends Document {
 
   bookId: String;
-  rating: {type: 
-    {userId: String, 
-      rate: Number};
-    }[];
+  rating: {type: {userId: String, rate: Number};}[];
   totalRate: Number;
 
 }
