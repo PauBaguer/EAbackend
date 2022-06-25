@@ -48,14 +48,13 @@ async function getById(req: Request, res: Response) {
 async function getByName(req: Request, res: Response) {
   try {
     const { name } = req.params;
-    const chat = await ChatModel.findOne({ name: req.params.name})
+    const chat = await ChatModel.findOne({ name: req.params.name })
       .populate("users")
       .populate({ path: "messages", populate: { path: "user" } });
 
     if (!chat)
       res.status(404).send({ message: `Chat with name ${name} not in DB` });
-
-    res.status(200).send(chat);
+    else res.status(200).send(chat);
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
