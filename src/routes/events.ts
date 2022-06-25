@@ -177,7 +177,7 @@ async function updateEvent(req: Request, res: Response): Promise<void> {
     const { eventId } = req.params;
     const eventToUpdate = await EventModel.findOneAndUpdate(
       { _id: eventId },
-      req.body
+      event
     );
     if (eventToUpdate == null) {
       res.status(404).send({ message: "The event doesn't exist!" });

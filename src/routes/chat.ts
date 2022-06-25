@@ -54,8 +54,7 @@ async function getByName(req: Request, res: Response) {
 
     if (!chat)
       res.status(404).send({ message: `Chat with name ${name} not in DB` });
-
-    res.status(200).send(chat);
+    else res.status(200).send(chat);
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
@@ -114,7 +113,7 @@ async function joinChat(req: Request, res: Response) {
 
     const result = await ChatModel.updateOne(
       { _id: chatId },
-      { users: chat.users.push(user._id) }
+      { $push: { users: userId } }
     );
 
     if (!result.modifiedCount) {

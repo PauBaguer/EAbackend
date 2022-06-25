@@ -16,6 +16,7 @@ export interface Club extends Document, Dates {
   category: Category[];
   createdAt: Date;
   updatedAt: Date;
+  photoURL: string;
 }
 
 const clubSchema = new Schema<Club>(
@@ -25,6 +26,11 @@ const clubSchema = new Schema<Club>(
     admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     chat: { type: Schema.Types.ObjectId, ref: "Chat" },
     usersList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    photoURL: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/tonilovers-inc/image/upload/v1656076995/istockphoto-499373254-612x612_hxhwzg.jpg",
+    },
     category: [
       { type: Schema.Types.ObjectId, required: true, ref: "Category" },
     ],
