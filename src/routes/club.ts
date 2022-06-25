@@ -45,7 +45,7 @@ async function getClub(req: Request, res: Response) {
 
 async function newClub(req: Request, res: Response) {
   try {
-    const { clubName, idAdmin, description, category } = req.body;
+    const { clubName, idAdmin, description, category, photoURL } = req.body;
 
     if (await ClubModel.findOne({ name: clubName })) {
       return res
@@ -74,6 +74,7 @@ async function newClub(req: Request, res: Response) {
       admin: adminUser,
       usersList: [adminUser],
       category: categories,
+      photoURL: photoURL,
     });
     const club = await newClub.save();
 
@@ -212,7 +213,7 @@ async function unsubscribeUserClub(req: Request, res: Response) {
 async function updateClub(req: Request, res: Response) {
   try {
     const { idClub } = req.params;
-    const { name, description, category } = req.body;
+    const { name, description, category, photoURL } = req.body;
 
     const categories: Category[] | null = await CategoryModel.find({
       name: category.split(","),
@@ -222,6 +223,7 @@ async function updateClub(req: Request, res: Response) {
       name: name,
       description: description,
       category: categories,
+      photoURL: photoURL,
     })
       .then((clubUpdate) => {
         if (clubUpdate == null) {
