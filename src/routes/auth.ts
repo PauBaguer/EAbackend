@@ -135,7 +135,7 @@ async function verifyToken(req: Request, res: Response) {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.post("/singup", singup);
 router.post("/singin", singin);

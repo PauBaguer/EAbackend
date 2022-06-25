@@ -71,7 +71,7 @@ export const VeryfyAdminToken = async (
       return;
     }
 
-    const role: Array<String> = decoded.role;
+    const role: Array<string> = decoded.role;
     if (!role.includes(Role.ADMIN)) {
       res.status(403).send({ message: "Role not authorized" });
       return;
@@ -113,7 +113,7 @@ export const VerifyWriterToken = async (
       res.status(403).send({ message: "User not authorized" });
       return;
     }
-    const role: Array<String> = decoded.role;
+    const role: Array<string> = decoded.role;
     if (!role.includes(Role.WRITER)) {
       res.status(403).send({ message: "Role not authorized" });
       return;

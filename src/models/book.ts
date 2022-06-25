@@ -6,13 +6,13 @@ const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 export interface Book extends Document, Dates {
-  title: String;
-  ISBN: String;
-  photoURL: String;
-  description: String;
+  title: string;
+  ISBN: string;
+  photoURL: string;
+  description: string;
   publishedDate: Date;
-  editorial: String;
-  rate: Number;
+  editorial: string;
+  rate: number;
   category: Category[];
   writer: Author;
 }

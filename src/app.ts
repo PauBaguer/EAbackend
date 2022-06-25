@@ -53,7 +53,7 @@ app.use("/comment", VerifyToken, commentRouter);
 app.use("/report", VerifyToken, reportRouter);
 app.use("/video", VerifyToken, videoconferenceRouter);
 
-let db = mongoose.connection;
+const db = mongoose.connection;
 db.on("error", () => console.log("MONGODB CONNECTION ERROR"));
 db.once("open", () => console.log("MONGODB CONNECTION OPEN"));
 await mongoose.connect(DB_URL);
@@ -66,7 +66,7 @@ const io = new Server(serv, {
   },
 });
 
-let openChats: String[] = [];
+const openChats: string[] = [];
 
 console.log("open socket");
 io.on("connection", (socket: Socket) => {
@@ -88,7 +88,7 @@ io.on("connection", (socket: Socket) => {
     socket.on(msg, async (chatText: string) => {
       const chatJs = JSON.parse(chatText);
       console.log("received message: " + chatText);
-      let chatMessage = new ChatMessageModel({
+      const chatMessage = new ChatMessageModel({
         user: chatJs.user._id,
         message: chatJs.message,
       });

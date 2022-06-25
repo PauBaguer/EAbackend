@@ -218,7 +218,7 @@ async function deleteEvent(req: Request, res: Response): Promise<void> {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", getEvents);
 router.get("/:eventId", getEventById);

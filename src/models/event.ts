@@ -6,12 +6,12 @@ import { User } from "./user";
 const Schema = mongoose.Schema;
 
 export interface Event extends Document, Dates {
-  name: String;
-  description: String;
+  name: string;
+  description: string;
   location: {
     type: {
-      latitude: Number;
-      longitude: Number;
+      latitude: number;
+      longitude: number;
     };
   };
   admin: User;

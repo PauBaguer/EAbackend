@@ -7,11 +7,11 @@ const model = mongoose.model;
 
 export interface Comment extends Document, Dates {
   user: User;
-  title: String;
-  text: String;
-  type: String;
-  users: String[];
-  likes: Number;
+  title: string;
+  text: string;
+  type: string;
+  users: string[];
+  likes: number;
 }
 
 const commentSchema = new Schema(

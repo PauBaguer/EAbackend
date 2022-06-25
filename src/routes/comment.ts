@@ -108,7 +108,7 @@ async function deleteComment(req: Request, res: Response): Promise<void> {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", getComments);
 router.get("/type/:type", getCommentByType);

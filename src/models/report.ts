@@ -7,9 +7,9 @@ const model = mongoose.model;
 
 export interface Report extends Document, Dates {
   user: User;
-  title: String;
-  text: String;
-  type: String;
+  title: string;
+  text: string;
+  type: string;
 }
 
 const ReportSchema = new Schema(

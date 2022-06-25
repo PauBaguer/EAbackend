@@ -10,14 +10,14 @@ export interface Rate extends Document {
 }
 
 const rateSchema = new Schema(
-    {
+  {
     bookId: { type: String, required: true },
     rating: [
       {
         userId: { type: String, required: true },
         rate: { type: Number, required: true },
       },
-       ],
+    ],
     totalRate: { type: Number, required: true },
   },
   { timestamps: true }

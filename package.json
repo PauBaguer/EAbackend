@@ -11,6 +11,7 @@
     "dev": "nodemon node .",
     "serve": "NODE_ENV=development node .",
     "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts",
     "prettier:fix": "prettier --write .",
     "prettier:check": "prettier --check ."
   },
@@ -35,22 +36,22 @@
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "eslint": "^8.18.0",
-    "husky": "^8.0.1",
+    "husky": "^4.3.8",
     "lint-staged": "^13.0.3",
     "nodemon": "^2.0.15",
     "prettier": "^2.7.1",
     "tslint": "^6.1.3"
   },
-
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
-  }
+    }
   },
-  "lint-staged":{
-    "src/**/*.{ts}":[
+  "lint-staged": {
+    "src/**/*.{ts}": [
       "npm run prettier:fix",
-      "npm run lint"
+      "npm run lint:fix",
+      "git add ."
     ]
   }
 }

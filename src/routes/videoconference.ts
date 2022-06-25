@@ -26,7 +26,7 @@ async function getToken(req: Request, res: Response) {
   res.status(200).send({ rtcToken: tokenA });
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/:channelName", getToken);
 export default router;

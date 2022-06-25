@@ -8,13 +8,13 @@ const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 export interface Author extends Document, Dates {
-  name: String;
+  name: string;
   birthDate: Date;
   deathDate: Date;
-  biography: String;
+  biography: string;
   books: Book[];
   categories: Category[];
-  photoURL: String;
+  photoURL: string;
   user: User;
 }
 

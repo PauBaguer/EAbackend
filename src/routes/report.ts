@@ -111,7 +111,7 @@ async function deleteReport(req: Request, res: Response): Promise<void> {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", getReports);
 router.get("/user/:user", getReportByUser);

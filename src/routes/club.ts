@@ -237,7 +237,7 @@ async function updateClub(req: Request, res: Response) {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", getClubs);
 router.get("/:idClub", getClub);
