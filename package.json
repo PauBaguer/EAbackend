@@ -48,9 +48,9 @@
   }
   },
   "lint-staged":{
-    "src/**/*.ts":[
-      "npm prettier:fix",
-      "npm lint"
+    "src/**/*":[
+      "npm run prettier:fix",
+      "npm run lint"
     ]
   }
 }
