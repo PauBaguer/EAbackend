@@ -44,11 +44,11 @@
 
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "lint-staged"
   }
   },
   "lint-staged":{
-    "src/**/*":[
+    "src/**/*.{ts}":[
       "npm run prettier:fix",
       "npm run lint"
     ]
