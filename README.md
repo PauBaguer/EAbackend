@@ -1,3 +1,3 @@
 # EA project backend - This book
-* API based on express
 
+- API based on express

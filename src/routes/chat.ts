@@ -48,7 +48,7 @@ async function getById(req: Request, res: Response) {
 async function getByName(req: Request, res: Response) {
   try {
     const { name } = req.params;
-    const chat = await ChatModel.findOne({ name: req.params.name})
+    const chat = await ChatModel.findOne({ name: req.params.name })
       .populate("users")
       .populate({ path: "messages", populate: { path: "user" } });
 

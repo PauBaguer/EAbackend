@@ -17,7 +17,9 @@ async function getComments(req: Request, res: Response): Promise<void> {
 
 async function getCommentByType(req: Request, res: Response): Promise<void> {
   try {
-    const commentsFound = await CommentModel.find({ type: req.params.type}).populate("user");
+    const commentsFound = await CommentModel.find({
+      type: req.params.type,
+    }).populate("user");
     if (commentsFound.length == 0) {
       res.status(404).send({ message: "There are no comments yet!" });
     } else {
@@ -28,10 +30,11 @@ async function getCommentByType(req: Request, res: Response): Promise<void> {
   }
 }
 
-
 async function getComment(req: Request, res: Response): Promise<void> {
   try {
-    const commentFound = await CommentModel.findOne({ _id: req.params.id, }).populate("user");
+    const commentFound = await CommentModel.findOne({
+      _id: req.params.id,
+    }).populate("user");
     if (commentFound == null) {
       res.status(404).send({ message: "The comment doesn't exist!" });
     } else {
@@ -44,15 +47,8 @@ async function getComment(req: Request, res: Response): Promise<void> {
 
 async function addComment(req: Request, res: Response): Promise<void> {
   try {
-    const {
-      user,
-      title,
-      text,
-      type,
-      users,
-      likes,
-    } = req.body;
-    
+    const { user, title, text, type, users, likes } = req.body;
+
     const userC = await UserModel.findById(user);
 
     const NewComment = new CommentModel({
@@ -72,20 +68,27 @@ async function addComment(req: Request, res: Response): Promise<void> {
 
 async function updateComment(req: Request, res: Response) {
   try {
-      const { id } = req.params;
-      const { user, title, text, type, users, likes } = req.body;
-      const result = await CommentModel.updateOne(
-          { _id: id },
-          { user: user, title: title, text: text, type: type, users: users, likes: likes }
-      );
-
-      if (!result.modifiedCount) {
-          res.status(404).send({ message: `Comment ${id} not found in DB` });
-          return;
+    const { id } = req.params;
+    const { user, title, text, type, users, likes } = req.body;
+    const result = await CommentModel.updateOne(
+      { _id: id },
+      {
+        user: user,
+        title: title,
+        text: text,
+        type: type,
+        users: users,
+        likes: likes,
       }
-      res.status(200).send({ message: `Comment ${id} updated` });
+    );
+
+    if (!result.modifiedCount) {
+      res.status(404).send({ message: `Comment ${id} not found in DB` });
+      return;
+    }
+    res.status(200).send({ message: `Comment ${id} updated` });
   } catch (e) {
-      res.status(500).send({ message: `Server error: ${e}` });
+    res.status(500).send({ message: `Server error: ${e}` });
   }
 }
 

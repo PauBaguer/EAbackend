@@ -16,34 +16,40 @@ async function getReports(req: Request, res: Response): Promise<void> {
 }
 
 async function getReportByUser(req: Request, res: Response): Promise<void> {
-    try {
-      const reportsFound = await ReportModel.find({ user: req.params.user}).populate("user");
-      if (reportsFound.length == 0) {
-        res.status(404).send({ message: "There are no reports yet!" });
-      } else {
-        res.status(200).send(reportsFound);
-      }
-    } catch (e) {
-      res.status(500).send({ message: `Server error: ${e}` });
+  try {
+    const reportsFound = await ReportModel.find({
+      user: req.params.user,
+    }).populate("user");
+    if (reportsFound.length == 0) {
+      res.status(404).send({ message: "There are no reports yet!" });
+    } else {
+      res.status(200).send(reportsFound);
     }
+  } catch (e) {
+    res.status(500).send({ message: `Server error: ${e}` });
   }
+}
 
-  async function getReportByType(req: Request, res: Response): Promise<void> {
-    try {
-      const reportsFound = await ReportModel.find({ type: req.params.type}).populate("user");
-      if (reportsFound.length == 0) {
-        res.status(404).send({ message: "There are no reports yet!" });
-      } else {
-        res.status(200).send(reportsFound);
-      }
-    } catch (e) {
-      res.status(500).send({ message: `Server error: ${e}` });
+async function getReportByType(req: Request, res: Response): Promise<void> {
+  try {
+    const reportsFound = await ReportModel.find({
+      type: req.params.type,
+    }).populate("user");
+    if (reportsFound.length == 0) {
+      res.status(404).send({ message: "There are no reports yet!" });
+    } else {
+      res.status(200).send(reportsFound);
     }
+  } catch (e) {
+    res.status(500).send({ message: `Server error: ${e}` });
   }
+}
 
 async function getReport(req: Request, res: Response): Promise<void> {
   try {
-    const reportFound = await ReportModel.findOne({ _id: req.params.id, }).populate("user");
+    const reportFound = await ReportModel.findOne({
+      _id: req.params.id,
+    }).populate("user");
     if (reportFound == null) {
       res.status(404).send({ message: "The report doesn't exist!" });
     } else {
@@ -56,20 +62,15 @@ async function getReport(req: Request, res: Response): Promise<void> {
 
 async function addReport(req: Request, res: Response): Promise<void> {
   try {
-    const {
-      user,
-      title,
-      text,
-      type,
-    } = req.body;
-    
+    const { user, title, text, type } = req.body;
+
     const userC = await UserModel.findById(user);
 
     const NewReport = new ReportModel({
       user: userC,
       title: title,
       text: text,
-      type: type
+      type: type,
     });
     await NewReport.save();
     res.status(200).send({ message: "Report added!" });
