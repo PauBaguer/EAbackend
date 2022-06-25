@@ -58,7 +58,11 @@ const userSchema = new Schema<User>(
     chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
     disabled: { type: Boolean, default: false },
     categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
-    photoURL: { type: String, default: "" },
+    photoURL: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/tonilovers-inc/image/upload/v1653557411/sample.jpg",
+    },
     role: { type: [String], default: ["READER"] },
     google: { type: Boolean, required: true, default: false },
   },

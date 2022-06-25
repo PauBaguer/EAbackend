@@ -19,6 +19,7 @@ export interface Event extends Document, Dates {
   eventDate: Date;
   usersList: User[];
   category: Category[];
+  photoURL: String;
 }
 
 const eventSchema = new Schema(
@@ -35,6 +36,11 @@ const eventSchema = new Schema(
     chat: { type: Schema.Types.ObjectId, ref: "Chat" },
     eventDate: { type: Date },
     usersList: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    photoURL: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/tonilovers-inc/image/upload/v1656077605/images_xdx4t4.jpg",
+    },
     category: [
       { type: Schema.Types.ObjectId, required: true, ref: "Category" },
     ],
