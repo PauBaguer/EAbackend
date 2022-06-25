@@ -45,6 +45,22 @@ async function getById(req: Request, res: Response) {
   }
 }
 
+async function getByName(req: Request, res: Response) {
+  try {
+    const { name } = req.params;
+    const chat = await ChatModel.findOne({ name: req.params.name})
+      .populate("users")
+      .populate({ path: "messages", populate: { path: "user" } });
+
+    if (!chat)
+      res.status(404).send({ message: `Chat with name ${name} not in DB` });
+
+    res.status(200).send(chat);
+  } catch (e) {
+    res.status(500).send({ message: `Server error: ${e}` });
+  }
+}
+
 async function newChat(req: Request<{}, {}, NewChatBody>, res: Response) {
   try {
     const name: String = req.body.name;
@@ -235,6 +251,7 @@ let router = express.Router();
 
 router.get("/", getAllChats);
 router.get("/:id", getById);
+router.get("/name/:name", getByName);
 router.get("/messages/:id", getLast10MessagesFrom);
 router.post("/", newChat);
 router.post("/join/:chatId/:userId", joinChat);

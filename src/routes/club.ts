@@ -85,8 +85,7 @@ async function newClub(req: Request, res: Response) {
         if (!resUser) {
           return res.status(404).send({ message: "Error add user to club." });
         }
-        res
-          .status(200).send(club);
+        res.status(200).send(club);
       })
       .catch((error) => {
         res.status(400).send({ message: `Error subscribe to club ${error}` });
@@ -213,16 +212,26 @@ async function unsubscribeUserClub(req: Request, res: Response) {
 async function updateClub(req: Request, res: Response) {
   try {
     const { idClub } = req.params;
-    const { name, description } = req.body;
+    const { name, description, category } = req.body;
 
-    await ClubModel.findByIdAndUpdate(idClub, { name: name, description: description }).then(clubUpdate => {
-      if (clubUpdate == null) {
-        return res.status(404).send({ message: "Club not found" });
-      }
-      res.status(200).send({ message: "Updated" });
-    }).catch(error => {
-      res.status(400).send({ message: `Error unsubscribe to club ${error}` });
+    const categories: Category[] | null = await CategoryModel.find({
+      name: category.split(","),
     });
+
+    await ClubModel.findByIdAndUpdate(idClub, {
+      name: name,
+      description: description,
+      category: categories,
+    })
+      .then((clubUpdate) => {
+        if (clubUpdate == null) {
+          return res.status(404).send({ message: "Club not found" });
+        }
+        res.status(200).send({ message: "Updated" });
+      })
+      .catch((error) => {
+        res.status(400).send({ message: `Error unsubscribe to club ${error}` });
+      });
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
   }
