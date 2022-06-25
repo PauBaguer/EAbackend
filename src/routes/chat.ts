@@ -112,7 +112,7 @@ async function joinChat(req: Request, res: Response) {
 
     const result = await ChatModel.updateOne(
       { _id: chatId },
-      { users: chat.users.push(user._id) }
+      { $push: { users: userId} }
     );
 
     if (!result.modifiedCount) {
