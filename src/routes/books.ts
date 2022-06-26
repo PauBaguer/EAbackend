@@ -110,7 +110,7 @@ async function addBook(req: Request, res: Response): Promise<void> {
       editorial: editorial,
       writer: author,
     });
-    const book: Book = await newBook.save();
+    const book = await newBook.save();
     await AuthorModel.findOneAndUpdate(
       { _id: author },
       { $push: { books: book.id } },

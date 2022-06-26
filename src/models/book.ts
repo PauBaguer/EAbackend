@@ -26,9 +26,9 @@ const bookSchema = new Schema(
     ISBN: { type: String, required: true, unique: true },
     photoURL: { type: String },
     publishedDate: { type: Date },
-    format: { type: String },
+    
     description: { type: String, required: true },
-    location: { latitude: { type: Number }, longitude: { type: Number } },
+    
     rate: { type: Number },
     editorial: { type: String },
     writer: { type: Schema.Types.ObjectId, required: true, ref: "Author" },
