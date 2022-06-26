@@ -78,6 +78,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("disconnect", async () => {
+    socket.disconnect();
     console.log("Socket client disconnected");
   });
 

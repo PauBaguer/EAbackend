@@ -39,8 +39,15 @@ async function getEventById(req: Request, res: Response): Promise<void> {
 
 async function createEvent(req: Request, res: Response): Promise<void> {
   try {
-    const { name, description, location, category, eventDate, usersList } =
-      req.body;
+    const {
+      name,
+      description,
+      location,
+      category,
+      eventDate,
+      usersList,
+      photoURL,
+    } = req.body;
     const { userId } = req.params;
     const admin: User | null = await UserModel.findOne({
       _id: userId,
@@ -61,6 +68,7 @@ async function createEvent(req: Request, res: Response): Promise<void> {
       category: categories,
       usersList: admin,
       eventDate: eventDate,
+      photoURL: photoURL,
     });
     await newEvent.save();
     UserModel.findOneAndUpdate(
