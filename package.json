@@ -6,10 +6,6 @@
   "type": "module",
   "scripts": {
     "tsc": "tsc -w",
-<<<<<<< HEAD
-    "start": "tsc && NODE_ENV=production node .",
-    "dev": "tsc && nodemon NODE_ENV=development node ."
-=======
     "build": "tsc",
     "start": "NODE_ENV=production node .",
     "dev": "nodemon node .",
@@ -18,7 +14,6 @@
     "lint:fix": "eslint --fix src/**/*.ts",
     "prettier:fix": "prettier --write .",
     "prettier:check": "prettier --check ."
->>>>>>> develop
   },
   "author": "",
   "license": "ISC",

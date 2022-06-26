@@ -15,21 +15,6 @@ import videoconferenceRouter from "./routes/videoconference.js";
 import { VerifyToken, VeryfyAdminToken } from "./middlewares/verifyToken.js";
 import logger from "morgan";
 import cors from "cors";
-<<<<<<< HEAD
-import { production, development, envConf } from "./config/env.js";
-
-console.log(`Running ${process.env.NODE_ENV} configuration`);
-
-let envSettings: envConf;
-if (process.env.NODE_ENV === "production") {
-  envSettings = production;
-} else {
-  envSettings = development;
-}
-
-const app = express();
-const PORT = envSettings.port || 8080;
-=======
 import socket, { Server, Socket } from "socket.io";
 import { ChatMessage, ChatMessageModel } from "./models/chatMessage.js";
 import { ChatModel } from "./models/chat.js";
@@ -50,7 +35,6 @@ let DB_URL = process.env.DB_URL || "mongodb://localhost:27017/thisbook";
 DB_URL = DB_URL.replace("<user>", process.env.DB_USER!);
 DB_URL = DB_URL.replace("<password>", process.env.DB_PASSWORD!);
 //}
->>>>>>> develop
 
 app.use(logger("dev"));
 app.use(express.json());
