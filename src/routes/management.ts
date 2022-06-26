@@ -5,7 +5,7 @@ import { UserModel, UserToSend } from "../models/user.js";
 
 async function getCategories(req: Request, res: Response) {
   try {
-    let categories = await Categories();
+    const categories = await Categories();
     res.status(200).send(categories);
   } catch (e) {
     res.status(500).send({ message: `Server error: ${e}` });
@@ -67,7 +67,7 @@ async function deleteCategory(req: Request, res: Response) {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 router.get("/categories", getCategories);
 router.put("/updateCategories/:userId", updateUserCategories);
 router.post("/addCategory", addCategory);

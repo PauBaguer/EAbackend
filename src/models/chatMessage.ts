@@ -7,7 +7,7 @@ const model = mongoose.model;
 
 export interface ChatMessage extends mongoose.Document, Dates {
   user: User;
-  message: String;
+  message: string;
   date: Date;
 }
 

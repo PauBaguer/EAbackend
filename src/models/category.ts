@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 export interface Category extends Document, Dates {
-  name: String;
+  name: string;
 }
 
 const categorySchema = new Schema<Category>(

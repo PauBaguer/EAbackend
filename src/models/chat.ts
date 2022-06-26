@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 export interface Chat extends mongoose.Document, Dates {
-  name: String;
+  name: string;
   messages: ChatMessage[];
   users: User[];
 }

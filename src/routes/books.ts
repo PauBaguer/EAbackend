@@ -167,7 +167,7 @@ async function deleteBook(req: Request, res: Response): Promise<void> {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", getBooks);
 router.get("/:id", getBook);

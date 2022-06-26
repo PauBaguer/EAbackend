@@ -25,7 +25,7 @@ async function getAllChats(req: Request, res: Response) {
 }
 
 interface NewChatBody {
-  name: String;
+  name: string;
   userIds: Schema.Types.ObjectId[];
 }
 
@@ -60,9 +60,10 @@ async function getByName(req: Request, res: Response) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 async function newChat(req: Request<{}, {}, NewChatBody>, res: Response) {
   try {
-    const name: String = req.body.name;
+    const name: string = req.body.name;
     const userIds: Schema.Types.ObjectId[] = req.body.userIds;
 
     const chat = new ChatModel({ name: name, users: userIds });
@@ -112,7 +113,7 @@ async function joinChat(req: Request, res: Response) {
 
     const result = await ChatModel.updateOne(
       { _id: chatId },
-      { $push: { users: userId} }
+      { $push: { users: userId } }
     );
 
     if (!result.modifiedCount) {
@@ -246,7 +247,7 @@ async function getLast10MessagesFrom(req: Request, res: Response) {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", getAllChats);
 router.get("/:id", getById);

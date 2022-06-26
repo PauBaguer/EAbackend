@@ -11,37 +11,37 @@ const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 export interface User extends Document, Dates {
-  name: String;
-  userName: String;
+  name: string;
+  userName: string;
   birthDate: Date;
-  mail: String;
-  password: String;
-  location: { latidude: Number; longitude: Number };
+  mail: string;
+  password: string;
+  location: { latidude: number; longitude: number };
   books: Book[];
   events: Event[];
   clubs: Club[];
   chats: Chat[];
-  disabled: Boolean;
+  disabled: boolean;
   categories: Category[];
-  photoURL: String;
-  role: String[];
-  google: Boolean;
+  photoURL: string;
+  role: string[];
+  google: boolean;
 }
 
 export interface UserToSend {
-  name: String;
-  userName: String;
+  name: string;
+  userName: string;
   birthDate: Date;
-  mail: String;
-  location: { latidude: Number; longitude: Number };
+  mail: string;
+  location: { latidude: number; longitude: number };
   books: Book[];
   events: Event[];
   clubs: Club[];
   chats: Chat[];
   categories: Category[];
-  photoURL: String;
-  role: String[];
-  google: Boolean;
+  photoURL: string;
+  role: string[];
+  google: boolean;
 }
 
 const userSchema = new Schema<User>(

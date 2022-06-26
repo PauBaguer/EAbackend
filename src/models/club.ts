@@ -16,7 +16,7 @@ export interface Club extends Document, Dates {
   category: Category[];
   createdAt: Date;
   updatedAt: Date;
-  photoURL: String;
+  photoURL: string;
 }
 
 const clubSchema = new Schema<Club>(

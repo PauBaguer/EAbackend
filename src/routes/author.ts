@@ -258,7 +258,7 @@ async function deleteById(req: Request, res: Response) {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", getAll);
 router.get("/:id", getById);

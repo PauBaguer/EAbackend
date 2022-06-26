@@ -70,13 +70,14 @@ async function getByUserName(req: Request, res: Response) {
 }
 
 interface RegisterUser {
-  name: String;
-  userName: String;
+  name: string;
+  userName: string;
   birthDate: Date;
-  mail: String;
-  password: String;
+  mail: string;
+  password: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 async function postUser(req: Request<{}, {}, RegisterUser>, res: Response) {
   try {
     const { name, userName, mail, birthDate, password } = req.body; // todo encrypt password and tokens
@@ -284,7 +285,7 @@ async function changePassword(req: Request, res: Response) {
   }
 }
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/", getAll);
 router.get("/:id", getById);
